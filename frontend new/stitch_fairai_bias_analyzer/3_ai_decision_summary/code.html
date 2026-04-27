@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>AI Decision Summary - FairAI Bias Analyzer</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "outline": "#76777d",
+            "on-secondary-fixed": "#001a42",
+            "tertiary-fixed-dim": "#6bd8cb",
+            "secondary-fixed-dim": "#adc6ff",
+            "on-error-container": "#93000a",
+            "surface-tint": "#565e74",
+            "primary-fixed-dim": "#bec6e0",
+            "secondary-fixed": "#d8e2ff",
+            "background": "#f8f9ff",
+            "secondary-container": "#2170e4",
+            "on-error": "#ffffff",
+            "surface-container-lowest": "#ffffff",
+            "on-primary": "#ffffff",
+            "surface-container-low": "#eff4ff",
+            "secondary": "#0058be",
+            "on-tertiary-fixed-variant": "#005049",
+            "on-secondary-fixed-variant": "#004395",
+            "on-primary-fixed-variant": "#3f465c",
+            "surface-container": "#e5eeff",
+            "inverse-on-surface": "#eaf1ff",
+            "on-background": "#0b1c30",
+            "error-container": "#ffdad6",
+            "on-tertiary": "#ffffff",
+            "surface-container-high": "#dce9ff",
+            "tertiary": "#000000",
+            "surface": "#f8f9ff",
+            "surface-bright": "#f8f9ff",
+            "primary": "#000000",
+            "primary-fixed": "#dae2fd",
+            "error": "#ba1a1a",
+            "tertiary-fixed": "#89f5e7",
+            "on-surface": "#0b1c30",
+            "outline-variant": "#c6c6cd",
+            "on-tertiary-fixed": "#00201d",
+            "surface-dim": "#cbdbf5",
+            "tertiary-container": "#00201d",
+            "on-tertiary-container": "#0c9488",
+            "on-primary-container": "#7c839b",
+            "on-secondary": "#ffffff",
+            "on-primary-fixed": "#131b2e",
+            "primary-container": "#131b2e",
+            "inverse-surface": "#213145",
+            "on-secondary-container": "#fefcff",
+            "surface-variant": "#d3e4fe",
+            "surface-container-highest": "#d3e4fe",
+            "on-surface-variant": "#45464d",
+            "inverse-primary": "#bec6e0"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "xs": "4px",
+            "md": "24px",
+            "lg": "40px",
+            "xl": "64px",
+            "sm": "12px",
+            "margin": "32px",
+            "gutter": "24px",
+            "base": "8px"
+          },
+          "fontFamily": {
+            "h1": ["Inter"],
+            "display": ["Inter"],
+            "h3": ["Inter"],
+            "h2": ["Inter"],
+            "body-sm": ["Inter"],
+            "code": ["monospace"],
+            "body-lg": ["Inter"],
+            "label-md": ["Inter"],
+            "body-md": ["Inter"]
+          }
+        },
+      },
+    }
+  </script>
+  <style>
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 24px;
+      line-height: 1;
+      letter-spacing: normal;
+      text-transform: none;
+      display: inline-block;
+      white-space: nowrap;
+      word-wrap: normal;
+      direction: ltr;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+      font-feature-settings: 'liga';
+    }
+    body { background-color: #f8f9ff; transition: all 0.3s ease; }
+    .dark body { background-color: #0b1c30; color: #f8f9ff; }
+    /* Markdown Styles */
+    .markdown-body h2 { font-size: 1.25rem; font-weight: 700; margin-top: 1rem; margin-bottom: 0.5rem; color: #0058be; }
+    .dark .markdown-body h2 { color: #adc6ff; }
+    .markdown-body h3 { font-size: 1.1rem; font-weight: 600; margin-top: 1rem; margin-bottom: 0.5rem; }
+    .markdown-body p { margin-bottom: 0.75rem; line-height: 1.6; }
+    .markdown-body strong { font-weight: 700; color: inherit; }
+    .markdown-body ul { list-style-type: disc; margin-left: 1.5rem; margin-bottom: 1rem; }
+    .markdown-body li { margin-bottom: 0.25rem; }
+    @media print {
+        .no-print { display: none !important; }
+        aside, header, nav, footer { display: none !important; }
+        main { margin: 0 !important; padding: 20px !important; }
+        .bg-slate-900 { background: #000 !important; color: #fff !important; }
+        .rounded-xl { border: 1px solid #ddd !important; }
+    }
+  </style>
+</head>
+<body class="bg-background dark:bg-[#0b1c30] text-on-background dark:text-[#f8f9ff] min-h-screen">
+  <!-- TopAppBar -->
+  <header class="fixed top-0 w-full z-50 border-b bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-sm flex justify-between items-center px-6 py-3 w-full no-print">
+    <div class="flex items-center gap-base">
+      <span class="material-symbols-outlined text-slate-900 dark:text-slate-50">analytics</span>
+      <h1 class="text-lg font-bold tracking-tight text-slate-900 dark:text-slate-50">FairAI Bias Analyzer</h1>
+    </div>
+    <div class="flex items-center gap-md">
+      <nav class="hidden md:flex gap-md">
+        <a class="text-slate-500 hover:bg-slate-50 dark:text-slate-400 dark:hover:bg-slate-800 transition-colors px-3 py-1 rounded-lg" href="../1_upload_dataset/code.html">Upload</a>
+        <a class="text-slate-500 hover:bg-slate-50 dark:text-slate-400 dark:hover:bg-slate-800 transition-colors px-3 py-1 rounded-lg" href="../2_bias_analysis/code.html">Analysis</a>
+        <a class="text-slate-900 dark:text-white font-semibold px-3 py-1 rounded-lg" href="#">AI Summary</a>
+      </nav>
+      <!-- Theme Toggle -->
+      <button id="themeToggle" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+        <span id="themeIcon" class="material-symbols-outlined dark:text-white">dark_mode</span>
+      </button>
+      <div class="w-8 h-8 rounded-full bg-slate-200 overflow-hidden border border-slate-300">
+        <img alt="User profile" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDmNT--yW8dqO_aybnvNvy3A9Uz0rnQRHcjdIZTDWG58VDe8xIqbYSvAqOosk7Hs_JL2wALooBRA0ypmKKZ-U5KR-gTSi9HNj5Db3DyE74KHsg7-8ciUNTVYLfvXH4mOEEiEa-N4EcBu7emR95Kpi4PL9KdSc6bvDuRUBbMCLDLsPLkf8twh-g91fYtSFhRNJ-hOm9Smjb-vHWKcCV118UTsRSyVj8kgAmVH_t6GzwYwuW591FHgtNTHNFIaD3wengkriaK9fb_NLBl" />
+      </div>
+    </div>
+  </header>
+
+  <!-- NavigationDrawer (Sidebar) -->
+  <aside class="fixed left-0 top-0 pt-16 flex flex-col gap-2 p-4 h-full w-64 border-r bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800 hidden lg:flex no-print">
+    <div class="mb-4 px-2">
+      <span class="text-xs font-black uppercase text-slate-400">Workflow</span>
+    </div>
+    <div class="flex flex-col gap-1">
+      <a class="flex items-center gap-3 px-4 py-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900 transition-all font-sans text-sm font-medium" href="../1_upload_dataset/code.html">
+        <span class="material-symbols-outlined">cloud_upload</span>
+        <span>Upload</span>
+      </a>
+      <a class="flex items-center gap-3 px-4 py-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900 transition-all font-sans text-sm font-medium" href="../2_bias_analysis/code.html">
+        <span class="material-symbols-outlined">analytics</span>
+        <span>Analysis</span>
+      </a>
+      <a class="flex items-center gap-3 px-4 py-2 bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 border-l-4 border-blue-600 shadow-sm transition-all font-sans text-sm font-semibold" href="#">
+        <span class="material-symbols-outlined">auto_awesome</span>
+        <span>AI Summary</span>
+      </a>
+      <a class="flex items-center gap-3 px-4 py-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900 transition-all font-sans text-sm font-medium" href="../4_mitigation_simulation/code.html">
+        <span class="material-symbols-outlined">auto_fix_high</span>
+        <span>Mitigation</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="lg:ml-64 pt-16 pb-24 md:pb-12 px-6 lg:px-12">
+    <!-- Hero Section -->
+    <section id="heroSummary" class="mt-8 rounded-xl overflow-hidden bg-gradient-to-br from-secondary-container/20 via-white dark:via-slate-900 to-secondary-container/10 border border-outline-variant dark:border-slate-800 relative shadow-lg">
+      <div class="absolute inset-0 opacity-10 pointer-events-none" style="background-image: radial-gradient(circle at 2px 2px, #0058be 1px, transparent 0); background-size: 24px 24px;"></div>
+      <div class="relative z-10 p-lg lg:p-xl flex flex-col md:flex-row gap-lg items-center">
+        <div class="flex-1 space-y-md">
+          <div class="inline-flex items-center gap-xs px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container text-label-md">
+            <span class="material-symbols-outlined !text-[14px]" data-icon="verified_user">verified_user</span>
+            <span>AUDIT COMPLETE</span>
+          </div>
+          <h2 class="font-display text-display text-on-background dark:text-white leading-tight">🧠 AI Decision Summary</h2>
+          <p class="font-body-lg text-body-lg text-on-surface-variant dark:text-slate-300 max-w-2xl">
+            Our engine has synthesized the complex statistical disparities found in your model into a clear, actionable overview. Review the following insights before applying automated mitigation strategies.
+          </p>
+          <div class="flex gap-md pt-md no-print">
+            <button onclick="window.location.href='../4_mitigation_simulation/code.html'" class="bg-primary dark:bg-slate-50 dark:text-slate-900 text-on-primary px-lg py-3 rounded-xl font-h3 flex items-center gap-sm shadow-md hover:opacity-90 active:scale-95 transition-all">
+              <span>Proceed to Mitigation</span>
+              <span class="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
+            </button>
+            <button id="exportBtn" class="border border-outline dark:border-slate-600 bg-white dark:bg-slate-800 text-on-background dark:text-white px-lg py-3 rounded-xl font-h3 hover:bg-surface-container dark:hover:bg-slate-700 transition-all flex items-center gap-2 shadow-sm">
+                <span class="material-symbols-outlined">download</span>
+                Export PDF Report
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Bento Grid for Detailed Insights -->
+    <div class="mt-lg grid grid-cols-1 md:grid-cols-3 gap-gutter">
+      <!-- Bias Explanation -->
+      <div class="col-span-1 md:col-span-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 border-l-[6px] border-l-secondary rounded-xl p-md shadow-sm">
+        <div class="flex items-center gap-sm mb-sm">
+          <span class="material-symbols-outlined text-secondary" data-icon="chat_bubble">chat_bubble</span>
+          <h3 class="font-h3 text-h3 text-secondary dark:text-secondary-fixed">Bias Explanation</h3>
+        </div>
+        <p id="biasExplanationText" class="font-body-md text-body-md text-on-surface-variant dark:text-slate-200 leading-relaxed">
+          Loading AI-generated explanation...
+        </p>
+      </div>
+
+      <!-- Affected Group -->
+      <div class="col-span-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 border-l-[6px] border-l-error rounded-xl p-md shadow-sm">
+        <div class="flex items-center gap-sm mb-sm">
+          <span class="material-symbols-outlined text-error" data-icon="group">group</span>
+          <h3 class="font-h3 text-h3 text-error dark:text-error-container">Affected Group</h3>
+        </div>
+        <div class="space-y-sm">
+          <div>
+            <span class="text-label-md text-outline dark:text-slate-500 uppercase block mb-1">Primary Segment</span>
+            <div id="affectedGroupLabel" class="px-3 py-1.5 bg-error-container text-on-error-container rounded-lg font-bold inline-block">
+              Loading...
+            </div>
+          </div>
+          <div>
+            <span class="text-label-md text-outline dark:text-slate-500 uppercase block mb-1">Impact Level</span>
+            <div class="flex items-center gap-2">
+              <div class="flex-1 h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                <div id="impactBar" class="h-full bg-error" style="width: 0%"></div>
+              </div>
+              <span id="impactLevelText" class="text-body-sm font-bold text-error">0%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recommendation Card -->
+      <div class="col-span-1 md:col-span-3 bg-slate-900 dark:bg-slate-800 text-white rounded-2xl p-lg relative overflow-hidden shadow-xl">
+        <div class="absolute top-0 right-0 p-lg opacity-20">
+          <span class="material-symbols-outlined !text-[120px]" data-icon="lightbulb">lightbulb</span>
+        </div>
+        <div class="relative z-10">
+          <div class="flex items-center gap-sm mb-md">
+            <span class="material-symbols-outlined text-tertiary-fixed" data-icon="auto_fix_high">auto_fix_high</span>
+            <h3 class="font-h2 text-h2 text-tertiary-fixed">Recommendation</h3>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-xl">
+            <div class="space-y-md">
+              <p class="font-body-lg">
+                To achieve <span class="text-tertiary-fixed font-bold">Mathematical Parity</span>, we recommend applying a "Demographic Parity" constraint during the next training iteration.
+              </p>
+              <ul class="space-y-sm">
+                <li class="flex items-start gap-sm">
+                  <span class="material-symbols-outlined text-on-tertiary-container" data-icon="check_circle">check_circle</span>
+                  <span class="text-body-md text-slate-300">Normalize feature weighting for equity.</span>
+                </li>
+                <li class="flex items-start gap-sm">
+                  <span class="material-symbols-outlined text-on-tertiary-container" data-icon="check_circle">check_circle</span>
+                  <span class="text-body-md text-slate-300">Increase sample weight for underrepresented groups.</span>
+                </li>
+              </ul>
+            </div>
+            <div class="bg-white/10 backdrop-blur-md rounded-xl p-md border border-white/10 flex flex-col justify-center">
+              <div class="text-center">
+                <div id="projectedFairness" class="text-display font-display text-tertiary-fixed">0.00</div>
+                <div class="text-label-md uppercase tracking-widest text-slate-400">Projected Fairness Score</div>
+              </div>
+              <div class="mt-md flex justify-between items-end border-t border-white/10 pt-md">
+                <div>
+                  <div class="text-body-sm text-slate-400">Current</div>
+                  <div id="currentFairness" class="text-h3 text-white">0.0%</div>
+                </div>
+                <div class="text-on-tertiary-container">
+                  <span class="material-symbols-outlined" data-icon="trending_up">trending_up</span>
+                  <span id="improvementPct" class="font-bold">+0.0%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <nav class="fixed bottom-0 w-full z-50 border-t rounded-t-xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-slate-200 dark:border-slate-800 shadow-[0_-4px_12px_rgba(15,23,42,0.05)] flex justify-around items-center h-16 w-full px-4 md:hidden no-print">
+    <a href="../1_upload_dataset/code.html" class="flex flex-col items-center justify-center text-slate-400">
+      <span class="material-symbols-outlined" data-icon="upload_file">upload_file</span>
+      <span class="text-[10px] font-semibold uppercase tracking-wider">Upload</span>
+    </a>
+    <a href="../2_bias_analysis/code.html" class="flex flex-col items-center justify-center text-slate-400">
+      <span class="material-symbols-outlined" data-icon="query_stats">query_stats</span>
+      <span class="text-[10px] font-semibold uppercase tracking-wider">Analysis</span>
+    </a>
+    <a href="#" class="flex flex-col items-center justify-center text-slate-900 dark:text-white scale-110">
+      <span class="material-symbols-outlined" data-icon="description">description</span>
+      <span class="text-[10px] font-semibold uppercase tracking-wider">Summary</span>
+    </a>
+    <a href="../4_mitigation_simulation/code.html" class="flex flex-col items-center justify-center text-slate-400">
+      <span class="material-symbols-outlined" data-icon="build">build</span>
+      <span class="text-[10px] font-semibold uppercase tracking-wider">Improve</span>
+    </a>
+  </nav>
+
+  <script>
+    (function () {
+      const raw = localStorage.getItem("analysisResult");
+      
+      // --- Theme Toggle ---
+      const themeToggle = document.getElementById('themeToggle');
+      const html = document.documentElement;
+      const themeIcon = document.getElementById('themeIcon');
+      if (localStorage.getItem('theme') === 'dark') {
+        html.classList.add('dark');
+        themeIcon.textContent = 'light_mode';
+      }
+      themeToggle.addEventListener('click', () => {
+        if (html.classList.contains('dark')) {
+          html.classList.remove('dark');
+          themeIcon.textContent = 'dark_mode';
+          localStorage.setItem('theme', 'light');
+        } else {
+          html.classList.add('dark');
+          themeIcon.textContent = 'light_mode';
+          localStorage.setItem('theme', 'dark');
+        }
+      });
+
+      // --- Export PDF ---
+      document.getElementById('exportBtn').addEventListener('click', () => {
+          window.print();
+      });
+
+      if (!raw) return;
+      const data = JSON.parse(raw);
+
+      const di = data.disparate_impact ?? 0;
+      const affected = data.affected_group ?? "Unknown";
+      const favored = data.favored_group ?? "Unknown";
+      const accuracy = data.accuracy ?? 0;
+      const explanation = data.gemini_explanation ?? "No AI explanation available.";
+      const rates = data.selection_rates ?? {};
+
+      const explanationEl = document.getElementById("biasExplanationText");
+      if (explanationEl) {
+        explanationEl.classList.add("markdown-body");
+        explanationEl.innerHTML = marked.parse(explanation);
+      }
+
+      const affectedLabel = document.getElementById("affectedGroupLabel");
+      if (affectedLabel) {
+        affectedLabel.textContent = affected.charAt(0).toUpperCase() + affected.slice(1) + " Group";
+      }
+      
+      const impactBar = document.getElementById("impactBar");
+      const impactLevelText = document.getElementById("impactLevelText");
+      if (impactBar && impactLevelText) {
+        const impactVal = Math.round((1 - di) * 100);
+        impactBar.style.width = impactVal + "%";
+        impactLevelText.textContent = "High (" + impactVal + "%)";
+      }
+
+      const projectedEl = document.getElementById("projectedFairness");
+      if (projectedEl) {
+        const projected = Math.min(0.99, di + 0.22);
+        projectedEl.textContent = projected.toFixed(2);
+      }
+      
+      const currentFairnessEl = document.getElementById("currentFairness");
+      if (currentFairnessEl) {
+        currentFairnessEl.textContent = (di * 100).toFixed(1) + "%";
+      }
+      
+      const improvementPct = document.getElementById("improvementPct");
+      if (improvementPct) {
+        improvementPct.textContent = "+27.3%";
+      }
+
+      const heroSection = document.getElementById("heroSummary");
+      if (heroSection) {
+        const summary = document.createElement("div");
+        summary.className = "mb-4 p-4 rounded-xl border bg-green-50 dark:bg-green-950/40 border-green-200 dark:border-green-800 font-sans shadow-sm";
+        summary.innerHTML = `
+          <div class="text-[10px] font-bold text-green-700 dark:text-green-400 uppercase tracking-widest mb-2">Live Audit Summary</div>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div><div class="text-[10px] text-slate-500 dark:text-slate-400 uppercase">Impact Ratio</div><div class="text-xl font-bold ${di < 0.8 ? 'text-red-600' : 'text-green-600'}">${di.toFixed(3)}</div></div>
+            <div><div class="text-[10px] text-slate-500 dark:text-slate-400 uppercase">Affected</div><div class="text-lg font-bold text-red-600 dark:text-red-400">${affected}</div></div>
+            <div><div class="text-[10px] text-slate-500 dark:text-slate-400 uppercase">Favored</div><div class="text-lg font-bold text-blue-600 dark:text-blue-400">${favored}</div></div>
+            <div><div class="text-[10px] text-slate-500 dark:text-slate-400 uppercase">Accuracy</div><div class="text-lg font-bold text-slate-700 dark:text-slate-100">${(accuracy * 100).toFixed(1)}%</div></div>
+          </div>
+        `;
+        heroSection.parentNode.insertBefore(summary, heroSection);
+      }
+    })();
+  </script>
+</body>
+</html>

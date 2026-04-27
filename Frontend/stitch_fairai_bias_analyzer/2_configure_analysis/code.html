@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "inverse-on-surface": "#eaf1ff",
+                    "secondary-fixed-dim": "#adc6ff",
+                    "on-secondary-fixed-variant": "#004395",
+                    "on-tertiary-fixed": "#00201d",
+                    "on-tertiary": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "surface-container-low": "#eff4ff",
+                    "surface": "#f8f9ff",
+                    "primary-fixed": "#dae2fd",
+                    "surface-variant": "#d3e4fe",
+                    "error-container": "#ffdad6",
+                    "secondary-fixed": "#d8e2ff",
+                    "on-background": "#0b1c30",
+                    "surface-container-highest": "#d3e4fe",
+                    "surface-container": "#e5eeff",
+                    "on-tertiary-fixed-variant": "#005049",
+                    "on-surface": "#0b1c30",
+                    "on-primary-fixed-variant": "#3f465c",
+                    "inverse-primary": "#bec6e0",
+                    "secondary": "#0058be",
+                    "on-primary-container": "#7c839b",
+                    "tertiary-container": "#00201d",
+                    "surface-container-lowest": "#ffffff",
+                    "tertiary": "#000000",
+                    "surface-dim": "#cbdbf5",
+                    "on-primary-fixed": "#131b2e",
+                    "outline-variant": "#c6c6cd",
+                    "error": "#ba1a1a",
+                    "background": "#f8f9ff",
+                    "outline": "#76777d",
+                    "on-error": "#ffffff",
+                    "inverse-surface": "#213145",
+                    "surface-tint": "#565e74",
+                    "secondary-container": "#2170e4",
+                    "surface-container-high": "#dce9ff",
+                    "primary": "#000000",
+                    "on-error-container": "#93000a",
+                    "primary-container": "#131b2e",
+                    "on-secondary-container": "#fefcff",
+                    "on-surface-variant": "#45464d",
+                    "on-secondary-fixed": "#001a42",
+                    "tertiary-fixed": "#89f5e7",
+                    "on-tertiary-container": "#0c9488",
+                    "surface-bright": "#f8f9ff",
+                    "on-primary": "#ffffff",
+                    "tertiary-fixed-dim": "#6bd8cb",
+                    "primary-fixed-dim": "#bec6e0"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "xl": "64px",
+                    "sm": "12px",
+                    "lg": "40px",
+                    "margin": "32px",
+                    "gutter": "24px",
+                    "xs": "4px",
+                    "md": "24px",
+                    "base": "8px"
+            },
+            "fontFamily": {
+                    "display": ["Inter"],
+                    "code": ["monospace"],
+                    "h1": ["Inter"],
+                    "body-md": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "h2": ["Inter"],
+                    "h3": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "label-md": ["Inter"]
+            },
+            "fontSize": {
+                    "display": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "code": ["14px", {"lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400"}],
+                    "h1": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "letterSpacing": "0", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "letterSpacing": "0", "fontWeight": "400"}],
+                    "h2": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "h3": ["20px", {"lineHeight": "28px", "letterSpacing": "0", "fontWeight": "600"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; min-height: max(884px, 100dvh); transition: background-color 0.3s ease, color 0.3s ease; }
+    </style>
+  </head>
+<body class="bg-surface dark:bg-slate-950 text-on-surface dark:text-slate-200">
+<!-- TopAppBar -->
+<header class="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-50 font-sans antialiased font-medium docked full-width top-0 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center w-full px-6 py-3 sticky z-50">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-50">FairAI</span>
+</div>
+<div class="flex items-center gap-6">
+<nav class="hidden md:flex gap-4">
+<span class="text-slate-500 dark:text-slate-400 font-label-md text-label-md cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors px-2 py-1" onclick="window.location.href='../1_upload_dataset/code.html'">UPLOAD</span>
+<span class="text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 font-label-md text-label-md px-2 py-1">CONFIG</span>
+<span class="text-slate-500 dark:text-slate-400 font-label-md text-label-md cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors px-2 py-1">ANALYSIS</span>
+</nav>
+<!-- Theme Toggle -->
+<button id="themeToggle" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+    <span id="themeIcon" class="material-symbols-outlined">dark_mode</span>
+</button>
+</div>
+</header>
+<div class="flex min-h-screen">
+<!-- NavigationDrawer -->
+<aside class="hidden lg:flex flex-col h-screen w-64 border-r border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 py-4 space-y-2 sticky top-0">
+<div class="px-6 mb-4">
+<p class="text-sm font-semibold tracking-wide uppercase font-inter text-slate-900 dark:text-slate-50">Audit Workflow</p>
+</div>
+<nav class="flex flex-col flex-1">
+<a class="flex items-center gap-3 px-6 py-3 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-all duration-200" href="../1_upload_dataset/code.html">
+<span class="material-symbols-outlined" data-icon="upload_file">upload_file</span>
+<span class="text-sm font-semibold tracking-wide uppercase font-inter whitespace-nowrap">Upload</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 border-l-4 border-blue-600 shadow-sm transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="tune">tune</span>
+<span class="text-sm font-semibold tracking-wide uppercase font-inter whitespace-nowrap">Config</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-all duration-200" href="../3_analyzing_fairness/code.html">
+<span class="material-symbols-outlined" data-icon="hourglass_empty">hourglass_empty</span>
+<span class="text-sm font-semibold tracking-wide uppercase font-inter whitespace-nowrap">Analysis</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-all duration-200" href="../4_analysis_results_insights/code.html">
+<span class="material-symbols-outlined" data-icon="auto_awesome">auto_awesome</span>
+<span class="text-sm font-semibold tracking-wide uppercase font-inter whitespace-nowrap">AI Summary</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-all duration-200" href="../5_apply_mitigation_strategy/code.html">
+<span class="material-symbols-outlined" data-icon="auto_fix_high">auto_fix_high</span>
+<span class="text-sm font-semibold tracking-wide uppercase font-inter whitespace-nowrap">Mitigation</span>
+</a>
+</nav>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 p-gutter md:p-margin bg-surface dark:bg-slate-950">
+<div class="max-w-5xl mx-auto space-y-md">
+<!-- Page Header -->
+<div class="space-y-xs">
+<h1 class="font-h1 text-h1 text-on-background dark:text-white">Audit Configuration</h1>
+<p class="font-body-md text-body-md text-on-surface-variant dark:text-slate-400 max-w-2xl">Define the variables for bias detection. FairAI will use these parameters to calculate parity metrics and identify disparate impact.</p>
+</div>
+
+<!-- No file warning -->
+<div id="noFileWarning" class="hidden p-sm bg-error-container dark:bg-red-900/30 rounded-lg flex items-center gap-3">
+    <span class="material-symbols-outlined text-error dark:text-red-400">warning</span>
+    <p class="font-body-sm text-body-sm text-error dark:text-red-300">No dataset found. <a href="../1_upload_dataset/code.html" class="underline font-semibold">Upload a CSV first</a> to configure columns.</p>
+</div>
+
+<!-- Main Grid Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
+<!-- Left: Selection Controls (2 Cols) -->
+<div class="lg:col-span-2 space-y-gutter">
+<!-- Target Column Selection -->
+<section class="bg-white dark:bg-slate-900 border border-outline-variant dark:border-slate-800 p-md rounded-lg">
+<div class="flex items-start gap-4 mb-md">
+<div class="bg-surface-container dark:bg-slate-800 text-secondary dark:text-blue-400 p-3 rounded">
+<span class="material-symbols-outlined" data-icon="flag">flag</span>
+</div>
+<div>
+<h3 class="font-h3 text-h3 dark:text-white">Target Column</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant dark:text-slate-400">The outcome your model predicts. Usually the binary label (0/1, yes/no, approved/rejected).</p>
+</div>
+</div>
+<div class="space-y-sm">
+<label class="block font-label-md text-label-md text-on-surface-variant dark:text-slate-500 uppercase mb-xs tracking-wider">Select Variable</label>
+<select id="targetSelect" class="w-full bg-surface-container-lowest dark:bg-slate-800 border border-outline dark:border-slate-700 p-3 rounded-lg font-body-md text-body-md dark:text-white focus:ring-2 focus:ring-secondary outline-none appearance-none cursor-pointer" onchange="updateSummary()">
+<option value="">— Select target column —</option>
+</select>
+</div>
+<div class="mt-md p-sm bg-surface-container-low dark:bg-slate-800/50 rounded border border-secondary-fixed-dim dark:border-slate-700">
+<p class="font-body-sm text-body-sm flex gap-2 dark:text-slate-300">
+<span class="material-symbols-outlined text-secondary dark:text-blue-400 scale-75" data-icon="info">info</span>
+<span>Analysis will measure fairness of <span class="font-bold" id="targetHint">the selected column</span> across subpopulations.</span>
+</p>
+</div>
+</section>
+<!-- Sensitive Attribute Selection -->
+<section class="bg-white dark:bg-slate-900 border border-outline-variant dark:border-slate-800 p-md rounded-lg">
+<div class="flex items-start gap-4 mb-md">
+<div class="bg-surface-container dark:bg-slate-800 text-secondary dark:text-blue-400 p-3 rounded">
+<span class="material-symbols-outlined" data-icon="diversity_3">diversity_3</span>
+</div>
+<div>
+<h3 class="font-h3 text-h3 dark:text-white">Sensitive Attribute</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant dark:text-slate-400">Protected classes or features where bias often occurs (e.g., gender, age, race).</p>
+</div>
+</div>
+<div class="space-y-sm">
+<label class="block font-label-md text-label-md text-on-surface-variant dark:text-slate-500 uppercase mb-xs tracking-wider">Select Attribute</label>
+<select id="sensitiveSelect" class="w-full bg-surface-container-lowest dark:bg-slate-800 border border-outline dark:border-slate-700 p-3 rounded-lg font-body-md text-body-md dark:text-white focus:ring-2 focus:ring-secondary outline-none appearance-none cursor-pointer" onchange="updateSummary()">
+<option value="">— Select sensitive column —</option>
+</select>
+</div>
+</section>
+</div>
+<!-- Right: Status and Action (1 Col) -->
+<div class="space-y-gutter">
+<!-- Readiness Card -->
+<div class="bg-surface-container-highest dark:bg-slate-900 border border-outline-variant dark:border-slate-800 rounded-lg p-md overflow-hidden relative">
+<div class="relative z-10 space-y-md">
+<div class="flex justify-between items-center">
+<span class="font-label-md text-label-md bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 px-2 py-1 rounded" id="readyBadge">READY TO ANALYZE</span>
+<span class="material-symbols-outlined text-green-600 dark:text-green-400" data-icon="check_circle">check_circle</span>
+</div>
+<h3 class="font-h2 text-h2 text-on-background dark:text-white">Audit Summary</h3>
+<div class="space-y-sm">
+<div class="flex justify-between font-body-sm text-body-sm border-b border-outline-variant dark:border-slate-800 pb-xs">
+<span class="text-on-surface-variant dark:text-slate-400">Dataset Size</span>
+<span class="font-semibold dark:text-white" id="summaryRows">—</span>
+</div>
+<div class="flex justify-between font-body-sm text-body-sm border-b border-outline-variant dark:border-slate-800 pb-xs">
+<span class="text-on-surface-variant dark:text-slate-400">Selected Target</span>
+<span class="font-semibold dark:text-white" id="summaryTarget">—</span>
+</div>
+<div class="flex justify-between font-body-sm text-body-sm">
+<span class="text-on-surface-variant dark:text-slate-400">Focus Attribute</span>
+<span class="font-semibold text-secondary dark:text-blue-400" id="summarySensitive">—</span>
+</div>
+</div>
+</div>
+<!-- Background Decoration -->
+<div class="absolute -bottom-12 -right-12 w-32 h-32 bg-secondary opacity-5 rounded-full blur-xl"></div>
+</div>
+<!-- Run Analysis Button -->
+<button id="runBtn" onclick="runAnalysis()" class="w-full bg-slate-900 dark:bg-blue-600 text-white py-lg rounded-xl font-h3 text-h3 flex flex-col items-center gap-2 hover:opacity-90 active:scale-[0.98] transition-all shadow-lg group">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-3xl group-hover:rotate-12 transition-transform" data-icon="rocket_launch">rocket_launch</span>
+<span>Run Analysis</span>
+</div>
+<span class="font-label-md text-label-md text-blue-200 uppercase tracking-widest">Est. Time: ~30 Seconds</span>
+</button>
+
+<!-- Error display -->
+<div id="errorBox" class="hidden p-sm bg-error-container dark:bg-red-900/30 rounded-lg">
+    <p class="font-body-sm text-body-sm text-error dark:text-red-300" id="errorMsg"></p>
+</div>
+
+<!-- Secondary Actions -->
+<div class="grid grid-cols-2 gap-sm">
+<button onclick="window.location.href='../1_upload_dataset/code.html'" class="border border-outline dark:border-slate-700 bg-white dark:bg-slate-900 text-on-surface dark:text-slate-300 py-3 px-4 rounded-lg font-label-md text-label-md flex items-center justify-center gap-2 hover:bg-surface-container-low dark:hover:bg-slate-800 transition-colors">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span> BACK
+</button>
+<button class="border border-outline dark:border-slate-700 bg-white dark:bg-slate-900 text-on-surface dark:text-slate-300 py-3 px-4 rounded-lg font-label-md text-label-md flex items-center justify-center gap-2 hover:bg-surface-container-low dark:hover:bg-slate-800 transition-colors">
+<span class="material-symbols-outlined" data-icon="settings">settings</span> ADVANCED
+</button>
+</div>
+</div>
+</div>
+<!-- Footer/Bottom Branding -->
+<div class="pt-xl flex justify-between items-center text-on-surface-variant dark:text-slate-500 opacity-50">
+<p class="font-label-md text-label-md">FAIRAI VERSION 2.4.0 • ENTERPRISE AUDIT ENGINE</p>
+<div class="flex gap-4">
+<span class="material-symbols-outlined" data-icon="security">security</span>
+<span class="material-symbols-outlined" data-icon="cloud_done">cloud_done</span>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- BottomNavBar (Visible on Mobile) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center bg-white/80 dark:bg-slate-900/80 backdrop-blur-md pb-safe border-t border-slate-200 dark:border-slate-800 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] h-16">
+<div class="flex flex-col items-center text-slate-400 dark:text-slate-600 tap-highlight-transparent" onclick="window.location.href='../1_upload_dataset/code.html'">
+<span class="material-symbols-outlined" data-icon="cloud_upload">cloud_upload</span>
+<span class="text-[10px] font-bold uppercase">Upload</span>
+</div>
+<div class="flex flex-col items-center text-blue-600 dark:text-blue-400 tap-highlight-transparent">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="text-[10px] font-bold uppercase">Config</span>
+</div>
+<div class="flex flex-col items-center text-slate-400 dark:text-slate-600 tap-highlight-transparent">
+<span class="material-symbols-outlined" data-icon="query_stats">query_stats</span>
+<span class="text-[10px] font-bold uppercase">Status</span>
+</div>
+<div class="flex flex-col items-center text-slate-400 dark:text-slate-600 tap-highlight-transparent">
+<span class="material-symbols-outlined" data-icon="assessment">assessment</span>
+<span class="text-[10px] font-bold uppercase">Results</span>
+</div>
+<div class="flex flex-col items-center text-slate-400 dark:text-slate-600 tap-highlight-transparent">
+<span class="material-symbols-outlined" data-icon="auto_fix_high">auto_fix_high</span>
+<span class="text-[10px] font-bold uppercase">Fix</span>
+</div>
+</nav>
+
+<script>
+    // --- Theme Management ---
+    const html = document.documentElement;
+    const themeToggle = document.getElementById('themeToggle');
+    const themeIcon = document.getElementById('themeIcon');
+
+    function updateTheme(isDark) {
+        if (isDark) {
+            html.classList.add('dark');
+            themeIcon.textContent = 'light_mode';
+            localStorage.setItem('theme', 'dark');
+        } else {
+            html.classList.remove('dark');
+            themeIcon.textContent = 'dark_mode';
+            localStorage.setItem('theme', 'light');
+        }
+    }
+
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') updateTheme(true);
+    else if (savedTheme === 'light') updateTheme(false);
+    else if (window.matchMedia('(prefers-color-scheme: dark)').matches) updateTheme(true);
+
+    themeToggle.addEventListener('click', () => {
+        updateTheme(!html.classList.contains('dark'));
+    });
+
+    const API_BASE = "http://127.0.0.1:8000";
+
+    window.onload = function () {
+        const columns = JSON.parse(localStorage.getItem('fairai_columns') || '[]');
+        const rows = localStorage.getItem('fairai_rows') || '—';
+        const filename = localStorage.getItem('fairai_filename') || '—';
+
+        if (!columns.length) {
+            document.getElementById('noFileWarning').classList.remove('hidden');
+        }
+
+        document.getElementById('summaryRows').textContent = rows ? `${parseInt(rows).toLocaleString()} rows` : '—';
+
+        // Populate target dropdown
+        const targetSelect = document.getElementById('targetSelect');
+        const sensitiveSelect = document.getElementById('sensitiveSelect');
+
+        columns.forEach(col => {
+            const opt1 = document.createElement('option');
+            opt1.value = col;
+            opt1.textContent = col;
+            targetSelect.appendChild(opt1);
+
+            const opt2 = document.createElement('option');
+            opt2.value = col;
+            opt2.textContent = col;
+            sensitiveSelect.appendChild(opt2);
+        });
+
+        // Try to auto-select sensible defaults
+        const likelyTarget = columns.find(c => ['approved', 'label', 'target', 'outcome', 'hired', 'y'].includes(c.toLowerCase()));
+        if (likelyTarget) targetSelect.value = likelyTarget;
+
+        const likelySensitive = columns.find(c => ['gender', 'race', 'ethnicity', 'sex', 'age_group'].includes(c.toLowerCase()));
+        if (likelySensitive) sensitiveSelect.value = likelySensitive;
+
+        updateSummary();
+    };
+
+    function updateSummary() {
+        const target = document.getElementById('targetSelect').value;
+        const sensitive = document.getElementById('sensitiveSelect').value;
+
+        document.getElementById('summaryTarget').textContent = target || '—';
+        document.getElementById('summarySensitive').textContent = sensitive || '—';
+        document.getElementById('targetHint').textContent = target || 'the selected column';
+
+        // Save selections to localStorage
+        if (target) localStorage.setItem('fairai_target', target);
+        if (sensitive) localStorage.setItem('fairai_sensitive', sensitive);
+    }
+
+    async function runAnalysis() {
+        const target = document.getElementById('targetSelect').value;
+        const sensitive = document.getElementById('sensitiveSelect').value;
+        const csvData = localStorage.getItem('fairai_csv_data');
+
+        // Validation
+        if (!target || !sensitive) {
+            showError('Please select both a Target Column and a Sensitive Attribute.');
+            return;
+        }
+        if (target === sensitive) {
+            showError('Target column and Sensitive attribute cannot be the same.');
+            return;
+        }
+        if (!csvData) {
+            showError('No dataset found. Please go back and upload a CSV file.');
+            return;
+        }
+
+        // Disable button, show loading
+        const btn = document.getElementById('runBtn');
+        btn.disabled = true;
+        btn.innerHTML = `
+            <div class="flex items-center gap-3">
+                <svg class="animate-spin h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                </svg>
+                <span>Analyzing...</span>
+            </div>
+            <span class="font-label-md text-label-md text-blue-200 uppercase tracking-widest">Calling Gemini AI...</span>
+        `;
+
+        try {
+            // Build form data from stored CSV
+            const blob = new Blob([csvData], { type: 'text/csv' });
+            const filename = localStorage.getItem('fairai_filename') || 'dataset.csv';
+            const file = new File([blob], filename, { type: 'text/csv' });
+
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('target', target);
+            formData.append('sensitive', sensitive);
+
+            // Store config
+            localStorage.setItem('fairai_target', target);
+            localStorage.setItem('fairai_sensitive', sensitive);
+
+            // Go to loading page while API runs
+            window.location.href = '../3_analyzing_fairness/code.html';
+
+        } catch (error) {
+            console.error(error);
+            showError('Connection error. Make sure the FairAI backend is running on port 8000.');
+            resetButton();
+        }
+    }
+
+    function showError(msg) {
+        const box = document.getElementById('errorBox');
+        document.getElementById('errorMsg').textContent = msg;
+        box.classList.remove('hidden');
+    }
+
+    function resetButton() {
+        const btn = document.getElementById('runBtn');
+        btn.disabled = false;
+        btn.innerHTML = `
+            <div class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-3xl group-hover:rotate-12 transition-transform" data-icon="rocket_launch">rocket_launch</span>
+                <span>Run Analysis</span>
+            </div>
+            <span class="font-label-md text-label-md text-blue-200 uppercase tracking-widest">Est. Time: ~30 Seconds</span>
+        `;
+    }
+</script>
+</body></html>

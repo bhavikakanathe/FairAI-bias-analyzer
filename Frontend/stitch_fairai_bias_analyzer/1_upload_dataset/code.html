@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FairAI Bias Analyzer</title>
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "inverse-on-surface": "#eaf1ff",
+                    "secondary-fixed-dim": "#adc6ff",
+                    "on-secondary-fixed-variant": "#004395",
+                    "on-tertiary-fixed": "#00201d",
+                    "on-tertiary": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "surface-container-low": "#eff4ff",
+                    "surface": "#f8f9ff",
+                    "primary-fixed": "#dae2fd",
+                    "surface-variant": "#d3e4fe",
+                    "error-container": "#ffdad6",
+                    "secondary-fixed": "#d8e2ff",
+                    "on-background": "#0b1c30",
+                    "surface-container-highest": "#d3e4fe",
+                    "surface-container": "#e5eeff",
+                    "on-tertiary-fixed-variant": "#005049",
+                    "on-surface": "#0b1c30",
+                    "on-primary-fixed-variant": "#3f465c",
+                    "inverse-primary": "#bec6e0",
+                    "secondary": "#0058be",
+                    "on-primary-container": "#7c839b",
+                    "tertiary-container": "#00201d",
+                    "surface-container-lowest": "#ffffff",
+                    "tertiary": "#000000",
+                    "surface-dim": "#cbdbf5",
+                    "on-primary-fixed": "#131b2e",
+                    "outline-variant": "#c6c6cd",
+                    "error": "#ba1a1a",
+                    "background": "#f8f9ff",
+                    "outline": "#76777d",
+                    "on-error": "#ffffff",
+                    "inverse-surface": "#213145",
+                    "surface-tint": "#565e74",
+                    "secondary-container": "#2170e4",
+                    "surface-container-high": "#dce9ff",
+                    "primary": "#000000",
+                    "on-error-container": "#93000a",
+                    "primary-container": "#131b2e",
+                    "on-secondary-container": "#fefcff",
+                    "on-surface-variant": "#45464d",
+                    "on-secondary-fixed": "#001a42",
+                    "tertiary-fixed": "#89f5e7",
+                    "on-tertiary-container": "#0c9488",
+                    "surface-bright": "#f8f9ff",
+                    "on-primary": "#ffffff",
+                    "tertiary-fixed-dim": "#6bd8cb",
+                    "primary-fixed-dim": "#bec6e0"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "xl": "64px",
+                    "sm": "12px",
+                    "lg": "40px",
+                    "margin": "32px",
+                    "gutter": "24px",
+                    "xs": "4px",
+                    "md": "24px",
+                    "base": "8px"
+            },
+            "fontFamily": {
+                    "display": ["Inter"],
+                    "code": ["monospace"],
+                    "h1": ["Inter"],
+                    "body-md": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "h2": ["Inter"],
+                    "h3": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "label-md": ["Inter"]
+            },
+            "fontSize": {
+                    "display": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "code": ["14px", {"lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400"}],
+                    "h1": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "letterSpacing": "0", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "letterSpacing": "0", "fontWeight": "400"}],
+                    "h2": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "h3": ["20px", {"lineHeight": "28px", "letterSpacing": "0", "fontWeight": "600"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        body { font-family: 'Inter', sans-serif; min-height: max(884px, 100dvh); transition: background-color 0.3s ease, color 0.3s ease; }
+        .drop-zone {
+            transition: all 0.2s ease;
+        }
+        .drop-zone.dragover {
+            border-color: #0058be;
+            background-color: #eff4ff;
+        }
+        .dark .drop-zone.dragover {
+            background-color: rgba(33, 112, 228, 0.1);
+        }
+    </style>
+</head>
+
+<body class="bg-surface dark:bg-slate-950 text-on-surface dark:text-slate-200">
+<!-- TopAppBar -->
+<header class="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-50 font-sans antialiased font-medium docked full-width top-0 border-b border-slate-200 dark:border-slate-800 flat no-shadows flex justify-between items-center w-full px-6 py-3 sticky z-50">
+    <div class="flex items-center gap-3">
+        <span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+        <span class="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-50">FairAI</span>
+    </div>
+    <div class="flex items-center gap-6">
+        <nav class="hidden md:flex gap-4">
+            <span class="text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 font-label-md text-label-md px-2 py-1">UPLOAD</span>
+            <span class="text-slate-500 dark:text-slate-400 font-label-md text-label-md cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors px-2 py-1">CONFIG</span>
+            <span class="text-slate-500 dark:text-slate-400 font-label-md text-label-md cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors px-2 py-1">ANALYSIS</span>
+        </nav>
+        <!-- Theme Toggle -->
+        <button id="themeToggle" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+            <span id="themeIcon" class="material-symbols-outlined">dark_mode</span>
+        </button>
+    </div>
+</header>
+
+<div class="flex min-h-screen">
+    <!-- NavigationDrawer -->
+    <aside class="hidden lg:flex flex-col h-screen w-64 border-r border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 py-4 space-y-2 sticky top-0">
+        <div class="px-6 mb-4">
+            <p class="text-sm font-semibold tracking-wide uppercase font-inter text-slate-900 dark:text-slate-50">Audit Workflow</p>
+        </div>
+        <nav class="flex flex-col flex-1">
+            <a class="flex items-center gap-3 px-6 py-3 bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 border-l-4 border-blue-600 shadow-sm transition-all duration-200" href="#">
+                <span class="material-symbols-outlined" data-icon="upload_file">upload_file</span>
+                <span class="text-sm font-semibold tracking-wide uppercase font-inter whitespace-nowrap">Upload</span>
+            </a>
+            <a class="flex items-center gap-3 px-6 py-3 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-all duration-200" href="../2_configure_analysis/code.html">
+                <span class="material-symbols-outlined" data-icon="tune">tune</span>
+                <span class="text-sm font-semibold tracking-wide uppercase font-inter whitespace-nowrap">Config</span>
+            </a>
+            <a class="flex items-center gap-3 px-6 py-3 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-all duration-200" href="../3_analyzing_fairness/code.html">
+                <span class="material-symbols-outlined" data-icon="hourglass_empty">hourglass_empty</span>
+                <span class="text-sm font-semibold tracking-wide uppercase font-inter whitespace-nowrap">Analysis</span>
+            </a>
+            <a class="flex items-center gap-3 px-6 py-3 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-all duration-200" href="../4_analysis_results_insights/code.html">
+                <span class="material-symbols-outlined" data-icon="auto_awesome">auto_awesome</span>
+                <span class="text-sm font-semibold tracking-wide uppercase font-inter whitespace-nowrap">AI Summary</span>
+            </a>
+            <a class="flex items-center gap-3 px-6 py-3 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-all duration-200" href="../5_apply_mitigation_strategy/code.html">
+                <span class="material-symbols-outlined" data-icon="auto_fix_high">auto_fix_high</span>
+                <span class="text-sm font-semibold tracking-wide uppercase font-inter whitespace-nowrap">Mitigation</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 p-gutter md:p-margin bg-surface dark:bg-slate-950">
+        <div class="max-w-5xl mx-auto space-y-md">
+            <!-- Page Header -->
+            <div class="space-y-xs">
+                <h1 class="font-h1 text-h1 text-on-background dark:text-white">Upload Dataset</h1>
+                <p class="font-body-md text-body-md text-on-surface-variant dark:text-slate-400 max-w-2xl">Upload a CSV file to begin the bias audit. FairAI will scan for protected attributes and outcome columns to measure fairness.</p>
+            </div>
+
+            <!-- Upload Card -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
+                <div class="lg:col-span-2 space-y-gutter">
+
+                    <!-- Drop Zone -->
+                    <section class="bg-white dark:bg-slate-900 border-2 border-dashed border-outline-variant dark:border-slate-800 p-md rounded-lg drop-zone" id="dropZone">
+                        <div class="flex flex-col items-center justify-center py-8 gap-4 text-center">
+                            <div class="bg-surface-container dark:bg-slate-800 text-secondary dark:text-blue-400 p-4 rounded-full">
+                                <span class="material-symbols-outlined text-4xl" style="font-size:48px">cloud_upload</span>
+                            </div>
+                            <div>
+                                <p class="font-h3 text-h3 text-on-background dark:text-white">Drop your CSV here</p>
+                                <p class="font-body-sm text-body-sm text-on-surface-variant dark:text-slate-400 mt-1">or click to browse from your computer</p>
+                            </div>
+                            <input type="file" id="fileInput" accept=".csv" class="hidden">
+                            <button onclick="document.getElementById('fileInput').click()" 
+                                    class="px-md py-sm border border-secondary dark:border-blue-500 text-secondary dark:text-blue-400 rounded-lg font-label-md text-label-md hover:bg-surface-container-low dark:hover:bg-slate-800 transition-colors">
+                                BROWSE FILES
+                            </button>
+                        </div>
+
+                        <!-- File Preview -->
+                        <div id="filePreview" class="hidden mt-4 p-sm bg-surface-container-low dark:bg-slate-800 rounded-lg border border-secondary-fixed-dim dark:border-slate-700 flex items-center gap-3">
+                            <span class="material-symbols-outlined text-secondary dark:text-blue-400">description</span>
+                            <div class="flex-1">
+                                <p id="fileName" class="font-body-md text-body-md font-semibold text-on-background dark:text-white"></p>
+                                <p id="fileSize" class="font-body-sm text-body-sm text-on-surface-variant dark:text-slate-400"></p>
+                            </div>
+                            <span class="material-symbols-outlined text-on-tertiary-container dark:text-green-400" id="fileCheckIcon">check_circle</span>
+                        </div>
+                    </section>
+
+                    <!-- Info Card -->
+                    <section class="bg-white dark:bg-slate-900 border border-outline-variant dark:border-slate-800 p-md rounded-lg">
+                        <div class="flex items-start gap-4 mb-md">
+                            <div class="bg-surface-container dark:bg-slate-800 text-secondary dark:text-blue-400 p-3 rounded">
+                                <span class="material-symbols-outlined" data-icon="info">info</span>
+                            </div>
+                            <div>
+                                <h3 class="font-h3 text-h3 dark:text-white">CSV Format Requirements</h3>
+                                <p class="font-body-sm text-body-sm text-on-surface-variant dark:text-slate-400">Ensure your dataset has clean headers and at least one binary outcome column.</p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-sm">
+                            <div class="p-sm bg-surface-container-low dark:bg-slate-800 rounded border-l-2 border-secondary dark:border-blue-500">
+                                <p class="font-label-md text-label-md text-secondary dark:text-blue-400 uppercase mb-xs">Required</p>
+                                <p class="font-body-sm text-body-sm dark:text-slate-300">Binary target column (0/1, yes/no)</p>
+                            </div>
+                            <div class="p-sm bg-surface-container-low dark:bg-slate-800 rounded border-l-2 border-secondary dark:border-blue-500">
+                                <p class="font-label-md text-label-md text-secondary dark:text-blue-400 uppercase mb-xs">Sensitive</p>
+                                <p class="font-body-sm text-body-sm dark:text-slate-300">Gender, race, age, zip code columns</p>
+                            </div>
+                            <div class="p-sm bg-surface-container-low dark:bg-slate-800 rounded border-l-2 border-secondary dark:border-blue-500">
+                                <p class="font-label-md text-label-md text-secondary dark:text-blue-400 uppercase mb-xs">Format</p>
+                                <p class="font-body-sm text-body-sm dark:text-slate-300">UTF-8 encoded .csv with headers</p>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Right: Action Panel -->
+                <div class="space-y-gutter">
+                    <div class="bg-surface-container-highest dark:bg-slate-900 border border-outline-variant dark:border-slate-800 rounded-lg p-md overflow-hidden relative">
+                        <div class="relative z-10 space-y-md">
+                            <div class="flex justify-between items-center">
+                                <span id="statusBadge" class="font-label-md text-label-md bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-2 py-1 rounded">AWAITING FILE</span>
+                                <span class="material-symbols-outlined text-on-surface-variant dark:text-slate-500" id="statusIcon">hourglass_empty</span>
+                            </div>
+                            <h3 class="font-h2 text-h2 text-on-background dark:text-white">Upload Status</h3>
+                            <div class="space-y-sm">
+                                <div class="flex justify-between font-body-sm text-body-sm border-b border-outline-variant dark:border-slate-800 pb-xs">
+                                    <span class="text-on-surface-variant dark:text-slate-400">File Name</span>
+                                    <span class="font-semibold dark:text-white" id="statusFileName">—</span>
+                                </div>
+                                <div class="flex justify-between font-body-sm text-body-sm border-b border-outline-variant dark:border-slate-800 pb-xs">
+                                    <span class="text-on-surface-variant dark:text-slate-400">Rows Detected</span>
+                                    <span class="font-semibold dark:text-white" id="statusRows">—</span>
+                                </div>
+                                <div class="flex justify-between font-body-sm text-body-sm">
+                                    <span class="text-on-surface-variant dark:text-slate-400">Columns</span>
+                                    <span class="font-semibold dark:text-white" id="statusCols">—</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="absolute -bottom-12 -right-12 w-32 h-32 bg-secondary opacity-5 rounded-full blur-xl"></div>
+                    </div>
+
+                    <button id="continueBtn"
+                            onclick="continueToConfig()"
+                            disabled
+                            class="w-full bg-slate-900 dark:bg-blue-600 text-white py-lg rounded-xl font-h3 text-h3 flex flex-col items-center gap-2 opacity-50 cursor-not-allowed transition-all shadow-lg group">
+                        <div class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-3xl group-hover:translate-x-1 transition-transform" data-icon="arrow_forward">arrow_forward</span>
+                            <span>Continue</span>
+                        </div>
+                        <span class="font-label-md text-label-md text-on-primary-container dark:text-blue-200 uppercase tracking-widest">Configure Analysis</span>
+                    </button>
+
+                    <div class="grid grid-cols-1 gap-sm">
+                        <button onclick="loadSample()" class="border border-outline dark:border-slate-700 bg-white dark:bg-slate-900 text-on-surface dark:text-slate-300 py-3 px-4 rounded-lg font-label-md text-label-md flex items-center justify-center gap-2 hover:bg-surface-container-low dark:hover:bg-slate-800 transition-colors">
+                            <span class="material-symbols-outlined" data-icon="dataset">dataset</span> USE SAMPLE DATASET
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="pt-xl flex justify-between items-center text-on-surface-variant dark:text-slate-500 opacity-50">
+                <p class="font-label-md text-label-md">FAIRAI VERSION 2.4.0 • ENTERPRISE AUDIT ENGINE</p>
+                <div class="flex gap-4">
+                    <span class="material-symbols-outlined" data-icon="security">security</span>
+                    <span class="material-symbols-outlined" data-icon="cloud_done">cloud_done</span>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- BottomNavBar (Mobile) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center bg-white/80 dark:bg-slate-900/80 backdrop-blur-md pb-safe border-t border-slate-200 dark:border-slate-800 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] h-16">
+    <div class="flex flex-col items-center text-blue-600 dark:text-blue-400 tap-highlight-transparent">
+        <span class="material-symbols-outlined" data-icon="cloud_upload">cloud_upload</span>
+        <span class="text-[10px] font-bold uppercase">Upload</span>
+    </div>
+    <div class="flex flex-col items-center text-slate-400 dark:text-slate-600 tap-highlight-transparent">
+        <span class="material-symbols-outlined" data-icon="settings">settings</span>
+        <span class="text-[10px] font-bold uppercase">Config</span>
+    </div>
+    <div class="flex flex-col items-center text-slate-400 dark:text-slate-600 tap-highlight-transparent">
+        <span class="material-symbols-outlined" data-icon="query_stats">query_stats</span>
+        <span class="text-[10px] font-bold uppercase">Status</span>
+    </div>
+    <div class="flex flex-col items-center text-slate-400 dark:text-slate-600 tap-highlight-transparent">
+        <span class="material-symbols-outlined" data-icon="assessment">assessment</span>
+        <span class="text-[10px] font-bold uppercase">Results</span>
+    </div>
+    <div class="flex flex-col items-center text-slate-400 dark:text-slate-600 tap-highlight-transparent">
+        <span class="material-symbols-outlined" data-icon="auto_fix_high">auto_fix_high</span>
+        <span class="text-[10px] font-bold uppercase">Fix</span>
+    </div>
+</nav>
+
+<script>
+    // --- Theme Management ---
+    const html = document.documentElement;
+    const themeToggle = document.getElementById('themeToggle');
+    const themeIcon = document.getElementById('themeIcon');
+
+    function updateTheme(isDark) {
+        if (isDark) {
+            html.classList.add('dark');
+            themeIcon.textContent = 'light_mode';
+            localStorage.setItem('theme', 'dark');
+        } else {
+            html.classList.remove('dark');
+            themeIcon.textContent = 'dark_mode';
+            localStorage.setItem('theme', 'light');
+        }
+    }
+
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+        updateTheme(true);
+    } else if (savedTheme === 'light') {
+        updateTheme(false);
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        updateTheme(true);
+    }
+
+    themeToggle.addEventListener('click', () => {
+        updateTheme(!html.classList.contains('dark'));
+    });
+
+    let uploadedFile = null;
+    let parsedColumns = [];
+
+    const fileInput = document.getElementById('fileInput');
+    const dropZone = document.getElementById('dropZone');
+
+    // Drag & drop
+    dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropZone.classList.add('dragover');
+    });
+    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+    dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('dragover');
+        const file = e.dataTransfer.files[0];
+        if (file && file.name.endsWith('.csv')) handleFile(file);
+        else alert('Please drop a .csv file');
+    });
+
+    fileInput.addEventListener('change', () => {
+        if (fileInput.files[0]) handleFile(fileInput.files[0]);
+    });
+
+    function handleFile(file) {
+        uploadedFile = file;
+
+        // Show preview
+        document.getElementById('filePreview').classList.remove('hidden');
+        document.getElementById('fileName').textContent = file.name;
+        document.getElementById('fileSize').textContent = `${(file.size / 1024).toFixed(1)} KB`;
+
+        // Parse CSV to get columns & row count
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const text = e.target.result;
+            const lines = text.trim().split('\n');
+            parsedColumns = lines[0].split(',').map(c => c.trim().replace(/"/g, ''));
+            const rowCount = lines.length - 1;
+
+            // Update status panel
+            document.getElementById('statusBadge').textContent = 'FILE READY';
+            document.getElementById('statusBadge').className = 'font-label-md text-label-md bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 px-2 py-1 rounded';
+            document.getElementById('statusIcon').textContent = 'check_circle';
+            document.getElementById('statusIcon').className = 'material-symbols-outlined text-green-600 dark:text-green-400';
+            document.getElementById('statusFileName').textContent = file.name;
+            document.getElementById('statusRows').textContent = `${rowCount.toLocaleString()} rows`;
+            document.getElementById('statusCols').textContent = `${parsedColumns.length} columns`;
+
+            // Enable continue button
+            const btn = document.getElementById('continueBtn');
+            btn.disabled = false;
+            btn.classList.remove('opacity-50', 'cursor-not-allowed');
+            btn.classList.add('hover:opacity-90', 'active:scale-[0.98]', 'cursor-pointer');
+
+            // Store in session for next page
+            localStorage.setItem('fairai_columns', JSON.stringify(parsedColumns));
+            localStorage.setItem('fairai_rows', rowCount);
+            localStorage.setItem('fairai_filename', file.name);
+
+            // Store file as base64 for the API call later
+            storeFileAsBase64(file);
+        };
+        reader.readAsText(file);
+    }
+
+    function storeFileAsBase64(file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            // Store the raw CSV text for form submission on next pages
+            localStorage.setItem('fairai_csv_data', e.target.result);
+        };
+        reader.readAsText(file);
+    }
+
+    function continueToConfig() {
+        if (!uploadedFile) return;
+        window.location.href = '../2_configure_analysis/code.html';
+    }
+
+    function loadSample() {
+        // Create a sample CSV blob and load it
+        const sampleCSV = `age,gender,race,education,experience_years,zip_code,credit_score,loan_amount,income,approved
+28,male,white,bachelor,3,10001,720,15000,55000,1
+34,female,black,master,7,10002,680,22000,72000,0
+45,male,hispanic,high_school,15,10003,650,8000,41000,1
+22,female,white,bachelor,1,10004,590,5000,32000,0
+51,male,black,phd,20,10005,760,50000,110000,1
+29,female,asian,master,4,10006,730,18000,68000,1
+38,male,white,high_school,12,10007,620,12000,48000,0
+26,female,hispanic,bachelor,2,10008,700,10000,44000,0
+43,male,asian,master,16,10009,780,35000,95000,1
+31,female,white,bachelor,6,10010,710,20000,61000,1
+55,male,black,high_school,25,10011,600,7000,38000,0
+24,female,white,bachelor,2,10012,650,8000,36000,1
+47,male,hispanic,bachelor,18,10013,690,28000,79000,1
+33,female,black,master,8,10014,720,25000,74000,0
+29,male,asian,phd,5,10015,750,30000,88000,1
+41,female,white,high_school,14,10016,640,11000,46000,0
+36,male,black,bachelor,10,10017,680,19000,63000,1
+27,female,asian,master,3,10018,740,16000,71000,1
+52,male,white,phd,22,10019,800,60000,130000,1
+23,female,hispanic,bachelor,1,10020,580,4000,28000,0`;
+        
+        const blob = new Blob([sampleCSV], { type: 'text/csv' });
+        const file = new File([blob], 'sample_dataset.csv', { type: 'text/csv' });
+        handleFile(file);
+    }
+</script>
+
+</body>
+</html>

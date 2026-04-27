@@ -1,0 +1,31 @@
+<h2>Test FairAI</h2>
+
+<input type="file" id="file"><br><br>
+
+<input type="text" id="target" placeholder="approved"><br><br>
+<input type="text" id="sensitive" placeholder="gender"><br><br>
+
+<button onclick="send()">Run Analysis</button>
+
+<pre id="out"></pre>
+
+<script>
+async function send() {
+  const file = document.getElementById("file").files[0];
+  const target = document.getElementById("target").value;
+  const sensitive = document.getElementById("sensitive").value;
+
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("target", target);
+  formData.append("sensitive", sensitive);
+
+  const res = await fetch("http://127.0.0.1:8000/analyze", {
+    method: "POST",
+    body: formData,
+  });
+
+  const text = await res.text();   // 👈 change here
+  document.getElementById("out").innerText = text;
+}
+</script>

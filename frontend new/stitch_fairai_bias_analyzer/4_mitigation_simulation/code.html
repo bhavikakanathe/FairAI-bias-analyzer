@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Mitigation Simulation - FairAI Bias Analyzer</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet" />
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "outline": "#76777d",
+            "on-secondary-fixed": "#001a42",
+            "tertiary-fixed-dim": "#6bd8cb",
+            "secondary-fixed-dim": "#adc6ff",
+            "on-error-container": "#93000a",
+            "surface-tint": "#565e74",
+            "primary-fixed-dim": "#bec6e0",
+            "secondary-fixed": "#d8e2ff",
+            "background": "#f8f9ff",
+            "secondary-container": "#2170e4",
+            "on-error": "#ffffff",
+            "surface-container-lowest": "#ffffff",
+            "on-primary": "#ffffff",
+            "surface-container-low": "#eff4ff",
+            "secondary": "#0058be",
+            "on-tertiary-fixed-variant": "#005049",
+            "on-secondary-fixed-variant": "#004395",
+            "on-primary-fixed-variant": "#3f465c",
+            "surface-container": "#e5eeff",
+            "inverse-on-surface": "#eaf1ff",
+            "on-background": "#0b1c30",
+            "error-container": "#ffdad6",
+            "on-tertiary": "#ffffff",
+            "surface-container-high": "#dce9ff",
+            "tertiary": "#000000",
+            "surface": "#f8f9ff",
+            "surface-bright": "#f8f9ff",
+            "primary": "#000000",
+            "primary-fixed": "#dae2fd",
+            "error": "#ba1a1a",
+            "tertiary-fixed": "#89f5e7",
+            "on-surface": "#0b1c30",
+            "outline-variant": "#c6c6cd",
+            "on-tertiary-fixed": "#00201d",
+            "surface-dim": "#cbdbf5",
+            "tertiary-container": "#00201d",
+            "on-tertiary-container": "#0c9488",
+            "on-primary-container": "#7c839b",
+            "on-secondary": "#ffffff",
+            "on-primary-fixed": "#131b2e",
+            "primary-container": "#131b2e",
+            "inverse-surface": "#213145",
+            "on-secondary-container": "#fefcff",
+            "surface-variant": "#d3e4fe",
+            "surface-container-highest": "#d3e4fe",
+            "on-surface-variant": "#45464d",
+            "inverse-primary": "#bec6e0"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "xs": "4px",
+            "md": "24px",
+            "lg": "40px",
+            "xl": "64px",
+            "sm": "12px",
+            "margin": "32px",
+            "gutter": "24px",
+            "base": "8px"
+          },
+          "fontFamily": {
+            "h1": ["Inter"],
+            "display": ["Inter"],
+            "h3": ["Inter"],
+            "h2": ["Inter"],
+            "body-sm": ["Inter"],
+            "code": ["monospace"],
+            "body-lg": ["Inter"],
+            "label-md": ["Inter"],
+            "body-md": ["Inter"]
+          }
+        },
+      },
+    }
+  </script>
+  <style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    body { background-color: #f8f9ff; transition: all 0.3s ease; }
+    .dark body { background-color: #0b1c30; color: #f8f9ff; }
+    @media print {
+        .no-print { display: none !important; }
+        aside, header, nav, footer { display: none !important; }
+        main { margin: 0 !important; padding: 20px !important; }
+    }
+  </style>
+</head>
+<body class="bg-background dark:bg-[#0b1c30] text-on-background dark:text-[#f8f9ff] min-h-screen selection:bg-secondary-container">
+  <!-- TopAppBar -->
+  <header class="fixed top-0 w-full z-50 border-b bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-sm flex justify-between items-center px-6 py-3 w-full no-print">
+    <div class="flex items-center gap-3">
+      <span class="material-symbols-outlined text-slate-900 dark:text-slate-50" data-icon="account_balance">account_balance</span>
+      <h1 class="text-lg font-bold tracking-tight text-slate-900 dark:text-slate-50">FairAI Bias Analyzer</h1>
+    </div>
+    <div class="flex items-center gap-6">
+      <nav class="hidden md:flex gap-6 font-sans antialiased text-sm font-medium">
+        <a class="text-slate-500 hover:bg-slate-50 dark:text-slate-400 dark:hover:bg-slate-800 transition-colors px-3 py-1 rounded" href="../1_upload_dataset/code.html">Upload</a>
+        <a class="text-slate-500 hover:bg-slate-50 dark:text-slate-400 dark:hover:bg-slate-800 transition-colors px-3 py-1 rounded" href="../2_bias_analysis/code.html">Analysis</a>
+        <a class="text-slate-500 hover:bg-slate-50 dark:text-slate-400 dark:hover:bg-slate-800 transition-colors px-3 py-1 rounded" href="../3_ai_decision_summary/code.html">Summary</a>
+        <a class="text-slate-900 font-semibold dark:text-white" href="#">Mitigation</a>
+      </nav>
+      <!-- Theme Toggle -->
+      <button id="themeToggle" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+        <span id="themeIcon" class="material-symbols-outlined dark:text-white">dark_mode</span>
+      </button>
+      <div class="w-8 h-8 rounded-full bg-slate-200 overflow-hidden border border-slate-300">
+        <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDI0yKPIyzTuZNbKT__8eAKSKFZZoEdLjnYEICFVxAWIKrsGUGOxq0HAExWfheG6zViM53P-3qKfMGuswHxTo_C2Fle8ixvVmQ4TOl3RWudEsyLPBpoKDFHmMaQuzYXmi8WtM15vCsOC56DTmplreiX-ANnnN_0WP1d_gNHQHa5yPmRANT7ImmtxEKwh7dPwoicIAx2ICk8TFrUSEO59W3xguJPLB2J7-mT3ts1tzT7Cer6qAMqv1jlCL6eCer8XAS1MRjiU_KcC0ZW" />
+      </div>
+    </div>
+  </header>
+
+  <!-- NavigationDrawer (Sidebar) -->
+  <aside class="hidden lg:flex fixed left-0 top-0 pt-16 h-full w-64 border-r bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800 flex-col gap-2 p-4 no-print">
+    <span class="text-xs font-black uppercase text-slate-400 px-4 py-2">Workflow</span>
+    <div class="flex flex-col gap-1">
+      <a class="flex items-center gap-3 px-4 py-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900 transition-all font-sans text-sm font-medium" href="../1_upload_dataset/code.html">
+        <span class="material-symbols-outlined">cloud_upload</span>
+        <span>Upload</span>
+      </a>
+      <a class="flex items-center gap-3 px-4 py-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900 transition-all font-sans text-sm font-medium" href="../2_bias_analysis/code.html">
+        <span class="material-symbols-outlined">analytics</span>
+        <span>Analysis</span>
+      </a>
+      <a class="flex items-center gap-3 px-4 py-2 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900 transition-all font-sans text-sm font-medium" href="../3_ai_decision_summary/code.html">
+        <span class="material-symbols-outlined">auto_awesome</span>
+        <span>AI Summary</span>
+      </a>
+      <a class="flex items-center gap-3 px-4 py-2 bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 border-l-4 border-blue-600 shadow-sm transition-all font-sans text-sm font-semibold" href="#">
+        <span class="material-symbols-outlined">auto_fix_high</span>
+        <span>Mitigation</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="lg:ml-64 pt-16 pb-24 md:pb-12 px-6 lg:px-12">
+    <div class="mt-8 mb-lg flex flex-col md:flex-row justify-between items-start md:items-end gap-md">
+      <div>
+        <h2 class="font-display text-display text-on-background dark:text-white leading-tight">Mitigation Simulation</h2>
+        <p class="font-body-lg text-on-surface-variant dark:text-slate-300 max-w-2xl">Adjust parameters in real-time to simulate fairness outcomes and optimize your model's social impact.</p>
+      </div>
+      <button id="exportBtn" class="no-print border border-outline dark:border-slate-600 bg-white dark:bg-slate-800 text-on-background dark:text-white px-lg py-2.5 rounded-xl font-h3 hover:bg-surface-container dark:hover:bg-slate-700 transition-all flex items-center gap-2 shadow-sm">
+        <span class="material-symbols-outlined">download</span>
+        Download Report
+      </button>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+      <!-- Controls -->
+      <div class="md:col-span-5 space-y-gutter">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-md shadow-sm">
+          <h3 class="font-h3 text-h3 mb-md dark:text-white">Adjust Thresholds</h3>
+          <div class="space-y-lg">
+            <div class="space-y-3">
+              <div class="flex justify-between items-center">
+                <label id="affectedGroupLabel" class="font-body-md font-semibold text-error">Affected Group Rate</label>
+                <span id="sliderVal" class="font-h3 text-error">0%</span>
+              </div>
+              <input id="fairnessSlider" type="range" min="0" max="100" class="w-full h-2 bg-slate-100 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-error" />
+              <p class="text-xs text-on-surface-variant dark:text-slate-500">Increasing this rate directly improves the Disparate Impact score.</p>
+            </div>
+            <div class="pt-4 border-t border-slate-100 dark:border-slate-800">
+              <button onclick="alert('Applying mitigation... In a production system, this would re-train the model with a fairness constraint.')" class="w-full bg-secondary text-white py-3 rounded-xl font-bold hover:bg-blue-700 transition-all shadow-md active:scale-95">Apply Strategy</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-surface-container-low dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-md">
+          <h4 class="font-label-md text-slate-500 dark:text-slate-400 uppercase mb-sm">Strategy Logic</h4>
+          <p id="strategyText" class="font-body-sm text-on-surface-variant dark:text-slate-300">Loading strategy description...</p>
+        </div>
+      </div>
+
+      <!-- Results Visualization -->
+      <div class="md:col-span-7 space-y-gutter">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-md h-full flex flex-col shadow-sm">
+          <h3 class="font-h3 text-h3 mb-lg dark:text-white">Impact Comparison</h3>
+          <div class="flex-1 flex flex-col justify-center space-y-xl py-12">
+            <!-- Current Status -->
+            <div class="space-y-2">
+              <div class="flex justify-between items-end">
+                <span class="font-label-md text-slate-500 dark:text-slate-400 uppercase">Original Disparate Impact</span>
+                <span id="origDI" class="font-h2 text-slate-400 dark:text-slate-500">—</span>
+              </div>
+              <div class="h-3 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                <div id="origBar" class="h-full bg-slate-300 dark:bg-slate-700" style="width: 0%"></div>
+              </div>
+            </div>
+            <!-- Simulation Results -->
+            <div class="space-y-2">
+              <div class="flex justify-between items-end">
+                <span class="font-label-md text-secondary dark:text-secondary-fixed uppercase">Projected Disparate Impact</span>
+                <span id="projDI" class="font-h1 text-secondary dark:text-secondary-fixed">—</span>
+              </div>
+              <div class="h-4 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                <div id="projBar" class="h-full bg-secondary" style="width: 0%"></div>
+              </div>
+            </div>
+          </div>
+          <div id="statusAlert" class="mt-4 p-4 rounded-lg bg-error-container text-on-error-container flex items-center gap-3">
+             <span class="material-symbols-outlined" data-icon="warning">warning</span>
+             <span id="statusText" class="font-bold">Threshold not met</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <nav class="md:hidden fixed bottom-0 w-full z-50 border-t rounded-t-xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-slate-200 dark:border-slate-800 shadow-[0_-4px_12px_rgba(15,23,42,0.05)] flex justify-around items-center h-16 w-full px-4 no-print">
+    <a href="../1_upload_dataset/code.html" class="flex flex-col items-center justify-center text-slate-400">
+      <span class="material-symbols-outlined" data-icon="upload_file">upload_file</span>
+      <span class="text-[10px] font-semibold uppercase tracking-wider">Upload</span>
+    </a>
+    <a href="../2_bias_analysis/code.html" class="flex flex-col items-center justify-center text-slate-400">
+      <span class="material-symbols-outlined" data-icon="query_stats">query_stats</span>
+      <span class="text-[10px] font-semibold uppercase tracking-wider">Analysis</span>
+    </a>
+    <a href="../3_ai_decision_summary/code.html" class="flex flex-col items-center justify-center text-slate-400">
+      <span class="material-symbols-outlined" data-icon="description">description</span>
+      <span class="text-[10px] font-semibold uppercase tracking-wider">Summary</span>
+    </a>
+    <a href="#" class="flex flex-col items-center justify-center text-slate-900 dark:text-white scale-110">
+      <span class="material-symbols-outlined" data-icon="build">build</span>
+      <span class="text-[10px] font-semibold uppercase tracking-wider">Improve</span>
+    </a>
+  </nav>
+
+  <script>
+    (function() {
+      const raw = localStorage.getItem("analysisResult");
+      
+      // --- Theme Toggle ---
+      const themeToggle = document.getElementById('themeToggle');
+      const html = document.documentElement;
+      const themeIcon = document.getElementById('themeIcon');
+      if (localStorage.getItem('theme') === 'dark') {
+        html.classList.add('dark');
+        themeIcon.textContent = 'light_mode';
+      }
+      themeToggle.addEventListener('click', () => {
+        if (html.classList.contains('dark')) {
+          html.classList.remove('dark');
+          themeIcon.textContent = 'dark_mode';
+          localStorage.setItem('theme', 'light');
+        } else {
+          html.classList.add('dark');
+          themeIcon.textContent = 'light_mode';
+          localStorage.setItem('theme', 'dark');
+        }
+      });
+
+      // --- Export PDF ---
+      document.getElementById('exportBtn').addEventListener('click', () => {
+          window.print();
+      });
+
+      if (!raw) return;
+      const data = JSON.parse(raw);
+      const di = data.disparate_impact ?? 0;
+      const affected = data.affected_group ?? "Unknown";
+      const rates = data.selection_rates ?? {};
+      const affectedRate = rates[affected] ?? 0;
+      
+      const referenceRate = Math.max(...Object.values(rates));
+
+      // --- Initial UI ---
+      document.getElementById("affectedGroupLabel").textContent = `Selection Rate: ${affected}`;
+      document.getElementById("origDI").textContent = di.toFixed(3);
+      document.getElementById("origBar").style.width = (di * 100) + "%";
+      document.getElementById("strategyText").textContent = `Currently simulating "Threshold Adjustment" for the ${affected} group. This approach modifies decision boundaries to prioritize equality without sacrificing core predictive power.`;
+
+      const slider = document.getElementById("fairnessSlider");
+      const sliderVal = document.getElementById("sliderVal");
+      const projDI = document.getElementById("projDI");
+      const projBar = document.getElementById("projBar");
+      const statusText = document.getElementById("statusText");
+      const statusAlert = document.getElementById("statusAlert");
+
+      slider.value = (affectedRate * 100).toFixed(0);
+      
+      function updateSim() {
+        const val = slider.value / 100;
+        sliderVal.textContent = slider.value + "%";
+        
+        const newDI = val / referenceRate;
+        projDI.textContent = newDI.toFixed(3);
+        projBar.style.width = Math.min(100, newDI * 100) + "%";
+        
+        if (newDI >= 0.8) {
+           statusAlert.className = "mt-4 p-4 rounded-lg bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 flex items-center gap-3 shadow-sm";
+           statusText.textContent = "Parity threshold achieved ✅";
+        } else {
+           statusAlert.className = "mt-4 p-4 rounded-lg bg-error-container text-on-error-container flex items-center gap-3 shadow-sm";
+           statusText.textContent = "Fairness threshold not met (" + (newDI/0.8 * 100).toFixed(0) + "%)";
+        }
+      }
+
+      slider.addEventListener("input", updateSim);
+      updateSim();
+    })();
+  </script>
+</body>
+</html>

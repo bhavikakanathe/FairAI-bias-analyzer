@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Mitigation Strategy - FairAI</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-on-surface": "#eaf1ff", "secondary-fixed-dim": "#adc6ff", "on-secondary-fixed-variant": "#004395", "on-tertiary-fixed": "#00201d", "on-tertiary": "#ffffff", "on-secondary": "#ffffff", "surface-container-low": "#eff4ff", "surface": "#f8f9ff", "primary-fixed": "#dae2fd", "surface-variant": "#d3e4fe", "error-container": "#ffdad6", "secondary-fixed": "#d8e2ff", "on-background": "#0b1c30", "surface-container-highest": "#d3e4fe", "surface-container": "#e5eeff", "on-tertiary-fixed-variant": "#005049", "on-surface": "#0b1c30", "on-primary-fixed-variant": "#3f465c", "inverse-primary": "#bec6e0", "secondary": "#0058be", "on-primary-container": "#7c839b", "tertiary-container": "#00201d", "surface-container-lowest": "#ffffff", "tertiary": "#000000", "surface-dim": "#cbdbf5", "on-primary-fixed": "#131b2e", "outline-variant": "#c6c6cd", "error": "#ba1a1a", "background": "#f8f9ff", "outline": "#76777d", "on-error": "#ffffff", "inverse-surface": "#213145", "surface-tint": "#565e74", "secondary-container": "#2170e4", "surface-container-high": "#dce9ff", "primary": "#000000", "on-error-container": "#93000a", "primary-container": "#131b2e", "on-secondary-container": "#fefcff", "on-surface-variant": "#45464d", "on-secondary-fixed": "#001a42", "tertiary-fixed": "#89f5e7", "on-tertiary-container": "#0c9488", "surface-bright": "#f8f9ff", "on-primary": "#ffffff", "tertiary-fixed-dim": "#6bd8cb", "primary-fixed-dim": "#bec6e0"
+                    },
+                    "spacing": { "xl": "64px", "sm": "12px", "lg": "40px", "margin": "32px", "gutter": "24px", "xs": "4px", "md": "24px", "base": "8px" },
+                    "fontFamily": { "display": ["Inter"], "h1": ["Inter"], "body-md": ["Inter"], "body-lg": ["Inter"], "h2": ["Inter"], "h3": ["Inter"], "body-sm": ["Inter"], "label-md": ["Inter"] },
+                    "fontSize": {
+                        "display": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "h1": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "letterSpacing": "0", "fontWeight": "400" }],
+                        "h2": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "h3": ["20px", { "lineHeight": "28px", "letterSpacing": "0", "fontWeight": "600" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400" }],
+                        "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }]
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: max(884px, 100dvh);
+        }
+
+        .gemini-text h2 {
+            font-size: 16px;
+            font-weight: 600;
+            margin: 12px 0 6px;
+            color: #0b1c30;
+        }
+
+        .gemini-text p {
+            margin: 4px 0;
+            line-height: 1.6;
+        }
+
+        .gemini-text ul {
+            margin: 6px 0 6px 16px;
+            list-style: disc;
+        }
+
+        .gemini-text li {
+            margin: 3px 0;
+            line-height: 1.6;
+        }
+
+        .gemini-text strong {
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body class="font-body-md text-on-background min-h-screen flex flex-col">
+
+    <!-- TopAppBar -->
+    <header
+        class="bg-white border-b border-slate-200 flex justify-between items-center w-full px-6 py-3 sticky z-40 top-0">
+        <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-slate-900">analytics</span>
+            <span class="text-xl font-bold tracking-tight text-slate-900">FairAI</span>
+        </div>
+        <div class="hidden md:flex items-center space-x-8">
+            <nav class="flex space-x-6">
+                <span
+                    class="text-slate-500 hover:bg-slate-50 transition-colors px-2 py-1 cursor-pointer font-label-md text-label-md"
+                    onclick="window.location.href='../1_upload_dataset/code.html'">Upload</span>
+                <span
+                    class="text-slate-500 hover:bg-slate-50 transition-colors px-2 py-1 cursor-pointer font-label-md text-label-md"
+                    onclick="window.location.href='../2_configure_analysis/code.html'">Config</span>
+                <span
+                    class="text-slate-500 hover:bg-slate-50 transition-colors px-2 py-1 cursor-pointer font-label-md text-label-md"
+                    onclick="window.location.href='../4_analysis_results_insights/code.html'">Results</span>
+                <span
+                    class="text-blue-600 border-b-2 border-blue-600 px-2 py-1 font-label-md text-label-md">Mitigation</span>
+            </nav>
+        </div>
+    </header>
+
+    <div class="flex flex-1 overflow-hidden">
+        <!-- NavigationDrawer -->
+        <aside class="hidden lg:flex flex-col h-screen w-64 border-r border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 py-4 space-y-2 sticky top-0">
+            <div class="px-6 mb-4">
+                <p class="text-sm font-semibold tracking-wide uppercase text-slate-900 dark:text-slate-50">Audit Workflow</p>
+            </div>
+            <nav class="flex flex-col flex-1">
+                <a class="flex items-center gap-3 px-6 py-3 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-all duration-200" href="../1_upload_dataset/code.html">
+                    <span class="material-symbols-outlined">upload_file</span>
+                    <span class="text-sm font-semibold tracking-wide uppercase whitespace-nowrap">Upload</span>
+                </a>
+                <a class="flex items-center gap-3 px-6 py-3 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-all duration-200" href="../2_configure_analysis/code.html">
+                    <span class="material-symbols-outlined">tune</span>
+                    <span class="text-sm font-semibold tracking-wide uppercase whitespace-nowrap">Config</span>
+                </a>
+                <a class="flex items-center gap-3 px-6 py-3 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-all duration-200" href="../3_analyzing_fairness/code.html">
+                    <span class="material-symbols-outlined">hourglass_empty</span>
+                    <span class="text-sm font-semibold tracking-wide uppercase whitespace-nowrap">Analysis</span>
+                </a>
+                <a class="flex items-center gap-3 px-6 py-3 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-all duration-200" href="../4_analysis_results_insights/code.html">
+                    <span class="material-symbols-outlined">auto_awesome</span>
+                    <span class="text-sm font-semibold tracking-wide uppercase whitespace-nowrap">AI Summary</span>
+                </a>
+                <a class="flex items-center gap-3 px-6 py-3 bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 border-l-4 border-blue-600 shadow-sm transition-all duration-200" href="#">
+                    <span class="material-symbols-outlined">auto_fix_high</span>
+                    <span class="text-sm font-semibold tracking-wide uppercase whitespace-nowrap">Mitigation</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 overflow-y-auto p-gutter lg:p-xl bg-surface">
+            <div class="max-w-6xl mx-auto space-y-md">
+
+                <!-- Header -->
+                <div class="flex flex-col md:flex-row md:items-end justify-between gap-md">
+                    <div>
+                        <h1 class="font-h1 text-h1 text-on-surface mb-xs">Mitigation Strategy</h1>
+                        <p class="font-body-md text-body-md text-on-surface-variant max-w-2xl">Apply bias mitigation by
+                            removing the sensitive feature from the model. FairAI will retrain and compare fairness
+                            metrics.</p>
+                    </div>
+                </div>
+
+                <!-- Initial state: show original results + Run Mitigation button -->
+                <div id="initialView">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-gutter mb-md">
+                        <!-- Original results summary -->
+                        <div class="bg-white border border-slate-200 p-md flex flex-col justify-between min-h-[280px]">
+                            <div>
+                                <div class="flex items-center justify-between mb-md">
+                                    <span
+                                        class="font-label-md text-label-md bg-slate-100 text-slate-600 px-2 py-1 uppercase tracking-widest">Baseline
+                                        State</span>
+                                    <span class="material-symbols-outlined text-error">warning</span>
+                                </div>
+                                <h2 class="font-h2 text-h2 text-on-surface mb-sm">Original Model</h2>
+                                <p class="font-body-sm text-body-sm text-on-surface-variant mb-lg">Results from your
+                                    initial bias audit before any mitigation is applied.</p>
+                                <div class="space-y-sm" id="originalMetrics">
+                                    <div
+                                        class="flex justify-between font-body-sm text-body-sm border-b border-slate-100 pb-xs">
+                                        <span class="text-on-surface-variant">Disparate Impact</span>
+                                        <span class="font-semibold text-error" id="origDI">—</span>
+                                    </div>
+                                    <div
+                                        class="flex justify-between font-body-sm text-body-sm border-b border-slate-100 pb-xs">
+                                        <span class="text-on-surface-variant">Model Accuracy</span>
+                                        <span class="font-semibold" id="origAcc">—</span>
+                                    </div>
+                                    <div class="flex justify-between font-body-sm text-body-sm">
+                                        <span class="text-on-surface-variant">Sensitive Feature</span>
+                                        <span class="font-semibold text-secondary" id="origSensitive">—</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Strategy description -->
+                        <div
+                            class="bg-white border-2 border-on-tertiary-container p-md flex flex-col justify-between min-h-[280px] relative overflow-hidden">
+                            <div
+                                class="absolute top-0 right-0 bg-on-tertiary-container text-white px-4 py-1 font-label-md text-[10px] uppercase tracking-widest">
+                                Strategy</div>
+                            <div>
+                                <div class="flex items-center justify-between mb-md">
+                                    <span
+                                        class="font-label-md text-label-md bg-on-tertiary-container/10 text-on-tertiary-container px-2 py-1 uppercase tracking-widest">Feature
+                                        Removal</span>
+                                    <span
+                                        class="material-symbols-outlined text-on-tertiary-container">verified_user</span>
+                                </div>
+                                <h2 class="font-h2 text-h2 text-on-tertiary-container mb-sm">Remove Sensitive Feature
+                                </h2>
+                                <p class="font-body-sm text-body-sm text-on-surface-variant mb-md">The model is
+                                    retrained without the sensitive attribute column. This is the simplest mitigation
+                                    approach — removing the feature that correlates directly with the protected class.
+                                </p>
+                                <div class="p-sm bg-surface-container-low rounded border-l-2 border-secondary">
+                                    <p class="font-body-sm text-body-sm"><strong>Trade-off:</strong> May reduce model
+                                        accuracy slightly while improving fairness metrics significantly.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Run Mitigation Button -->
+                    <div class="flex flex-col items-center gap-sm">
+                        <button id="runMitigationBtn" onclick="runMitigation()"
+                            class="px-xl py-md bg-secondary text-white font-h3 text-h3 flex items-center justify-center gap-sm shadow-lg hover:opacity-90 active:scale-95 transition-all rounded-xl">
+                            <span class="material-symbols-outlined"
+                                style="font-variation-settings: 'FILL' 1;">auto_fix_high</span>
+                            Apply Mitigation
+                        </button>
+                        <p class="font-body-sm text-body-sm text-on-surface-variant">This will call the FairAI backend
+                            and retrain the model without the sensitive feature.</p>
+                    </div>
+                </div>
+
+                <!-- Loading state -->
+                <div id="loadingView" class="hidden flex flex-col items-center justify-center py-16 gap-6 text-center">
+                    <div class="w-16 h-16 rounded-full bg-secondary flex items-center justify-center">
+                        <svg class="animate-spin h-8 w-8 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                            </circle>
+                            <path class="opacity-75" fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="font-h2 text-h2 text-on-background">Running Mitigation...</h2>
+                        <p class="font-body-md text-body-md text-on-surface-variant mt-1" id="loadingMsg">Retraining
+                            model without sensitive feature...</p>
+                    </div>
+                </div>
+
+                <!-- Results view (shown after mitigation) -->
+                <div id="resultsView" class="hidden space-y-md">
+
+                    <!-- Before/After Comparison -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-gutter">
+                        <!-- Before -->
+                        <div class="bg-white border border-slate-200 p-md flex flex-col justify-between min-h-[320px]">
+                            <div>
+                                <div class="flex items-center justify-between mb-md">
+                                    <span
+                                        class="font-label-md text-label-md bg-slate-100 text-slate-600 px-2 py-1 uppercase tracking-widest">Baseline
+                                        State</span>
+                                    <span class="material-symbols-outlined text-error">warning</span>
+                                </div>
+                                <h2 class="font-h2 text-h2 text-on-surface mb-sm">Biased Outcome</h2>
+                                <div class="space-y-md" id="beforeMetrics"><!-- JS --></div>
+                            </div>
+                        </div>
+                        <!-- After -->
+                        <div
+                            class="bg-white border-2 border-on-tertiary-container p-md flex flex-col justify-between min-h-[320px] relative overflow-hidden">
+                            <div
+                                class="absolute top-0 right-0 bg-on-tertiary-container text-white px-4 py-1 font-label-md text-[10px] uppercase tracking-widest">
+                                Mitigated</div>
+                            <div>
+                                <div class="flex items-center justify-between mb-md">
+                                    <span
+                                        class="font-label-md text-label-md bg-on-tertiary-container/10 text-on-tertiary-container px-2 py-1 uppercase tracking-widest">Post-Mitigation</span>
+                                    <span
+                                        class="material-symbols-outlined text-on-tertiary-container">verified_user</span>
+                                </div>
+                                <h2 class="font-h2 text-h2 text-on-tertiary-container mb-sm">Compliant State</h2>
+                                <div class="space-y-md" id="afterMetrics"><!-- JS --></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Gemini Evaluation -->
+                    <section class="bg-white border border-slate-200 p-md">
+                        <h3 class="font-h3 text-h3 text-on-surface mb-md flex items-center gap-xs">
+                            <span class="material-symbols-outlined text-secondary">psychology</span>
+                            Gemini AI Mitigation Evaluation
+                        </h3>
+                        <div class="p-md bg-surface-container-low rounded-lg border-l-4 border-secondary gemini-text"
+                            id="geminiEvaluation">
+                            Loading evaluation...
+                        </div>
+                    </section>
+
+                    <!-- Action buttons -->
+                    <div class="flex flex-col md:flex-row gap-sm justify-between items-center pt-md">
+                        <button onclick="window.location.href='../4_analysis_results_insights/code.html'"
+                            class="w-full md:w-auto border border-outline bg-white text-on-surface py-3 px-md rounded-lg font-label-md text-label-md flex items-center justify-center gap-2 hover:bg-surface-container-low transition-colors">
+                            <span class="material-symbols-outlined">arrow_back</span> Back to Results
+                        </button>
+                        <button onclick="window.location.href='../1_upload_dataset/code.html'"
+                            class="w-full md:w-auto px-xl py-md bg-secondary text-white font-h3 rounded-lg flex items-center justify-center gap-sm shadow-lg hover:opacity-90 active:scale-95 transition-all">
+                            <span class="material-symbols-outlined">refresh</span>
+                            Start New Audit
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Error box -->
+                <div id="errorBox" class="hidden p-md bg-error-container rounded-lg flex items-start gap-3">
+                    <span class="material-symbols-outlined text-error">error</span>
+                    <div>
+                        <p class="font-body-sm font-semibold text-error mb-1">Mitigation Failed</p>
+                        <p class="font-body-sm text-body-sm text-error" id="errorMsg"></p>
+                        <button
+                            onclick="document.getElementById('errorBox').classList.add('hidden'); document.getElementById('initialView').classList.remove('hidden')"
+                            class="mt-2 px-3 py-1 bg-error text-white rounded text-xs font-semibold">Try Again</button>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div class="pt-xl flex justify-between items-center text-on-surface-variant opacity-50">
+                    <p class="font-label-md text-label-md">FAIRAI VERSION 2.4.0 • ENTERPRISE AUDIT ENGINE</p>
+                    <div class="flex gap-4">
+                        <span class="material-symbols-outlined">security</span>
+                        <span class="material-symbols-outlined">cloud_done</span>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Mobile BottomNav -->
+    <nav
+        class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center bg-white/80 backdrop-blur-md pb-safe h-16 border-t border-slate-200">
+        <div class="flex flex-col items-center text-slate-400"
+            onclick="window.location.href='../1_upload_dataset/code.html'"><span
+                class="material-symbols-outlined">cloud_upload</span><span
+                class="text-[10px] font-bold uppercase">Upload</span></div>
+        <div class="flex flex-col items-center text-slate-400"
+            onclick="window.location.href='../2_configure_analysis/code.html'"><span
+                class="material-symbols-outlined">settings</span><span
+                class="text-[10px] font-bold uppercase">Config</span></div>
+        <div class="flex flex-col items-center text-slate-400"><span
+                class="material-symbols-outlined">query_stats</span><span
+                class="text-[10px] font-bold uppercase">Status</span></div>
+        <div class="flex flex-col items-center text-blue-600"><span class="material-symbols-outlined"
+                style="font-variation-settings: 'FILL' 1;">auto_fix_high</span><span
+                class="text-[10px] font-bold uppercase">Fix</span></div>
+    </nav>
+
+    <script>
+        const API_BASE = "http://127.0.0.1:8000";
+
+        window.onload = function () {
+            const data = JSON.parse(localStorage.getItem('analysisResult') || '{}');
+            const sensitive = localStorage.getItem('fairai_sensitive') || '—';
+
+            document.getElementById('origSensitive').textContent = sensitive;
+
+            if (data.disparate_impact !== undefined) {
+                document.getElementById('origDI').textContent = data.disparate_impact.toFixed(3);
+                document.getElementById('origAcc').textContent = data.accuracy ? `${(data.accuracy * 100).toFixed(1)}%` : '—';
+            }
+        };
+
+        async function runMitigation() {
+            const csvData = localStorage.getItem('fairai_csv_data');
+            const target = localStorage.getItem('fairai_target');
+            const sensitive = localStorage.getItem('fairai_sensitive');
+            const filename = localStorage.getItem('fairai_filename') || 'dataset.csv';
+
+            if (!csvData || !target || !sensitive) {
+                showError('Missing data. Please upload a dataset and run analysis first.');
+                return;
+            }
+
+            // Show loading
+            document.getElementById('initialView').classList.add('hidden');
+            document.getElementById('loadingView').classList.remove('hidden');
+            document.getElementById('errorBox').classList.add('hidden');
+
+            try {
+                const blob = new Blob([csvData], { type: 'text/csv' });
+                const file = new File([blob], filename, { type: 'text/csv' });
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('target', target);
+                formData.append('sensitive', sensitive);
+
+                document.getElementById('loadingMsg').textContent = 'Calling FairAI backend...';
+
+                const response = await fetch(`${API_BASE}/mitigate`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) throw new Error(`Server error: ${response.status}`);
+
+                const data = await response.json();
+                if (data.error) throw new Error(data.error);
+
+                // Hide loading, show results
+                document.getElementById('loadingView').classList.add('hidden');
+                document.getElementById('resultsView').classList.remove('hidden');
+
+                renderResults(data, sensitive);
+
+            } catch (error) {
+                document.getElementById('loadingView').classList.add('hidden');
+                document.getElementById('initialView').classList.remove('hidden');
+                let msg = error.message;
+                if (msg.includes('fetch') || msg.includes('Failed to fetch')) {
+                    msg = 'Cannot connect to the FairAI backend. Please run: uvicorn api:app --reload (in the Backend folder)';
+                }
+                showError(msg);
+            }
+        }
+
+        function renderResults(data, sensitive) {
+            const { original, mitigated, improvement, accuracy_change, gemini_evaluation } = data;
+
+            // Before metrics
+            const beforeEl = document.getElementById('beforeMetrics');
+            beforeEl.innerHTML = `
+        <div>
+            <div class="flex justify-between mb-xs">
+                <span class="font-label-md text-label-md">Disparate Impact Ratio</span>
+                <span class="font-h3 text-h3 text-error">${original.disparate_impact.toFixed(3)}</span>
+            </div>
+            <div class="w-full h-2 bg-slate-100 overflow-hidden rounded-full">
+                <div class="h-full bg-error rounded-full" style="width: ${(original.disparate_impact * 100).toFixed(0)}%"></div>
+            </div>
+        </div>
+        <div class="flex justify-between py-xs border-b border-slate-100">
+            <span class="font-body-sm text-body-sm text-on-surface-variant">Model Accuracy</span>
+            <span class="font-body-sm font-semibold">${(original.accuracy * 100).toFixed(1)}%</span>
+        </div>
+        ${Object.entries(original.selection_rates).map(([g, r]) =>
+                `<div class="flex justify-between py-xs border-b border-slate-100 last:border-0">
+                <span class="font-body-sm text-on-surface-variant capitalize">${g}</span>
+                <span class="font-body-sm font-semibold">${(r * 100).toFixed(1)}%</span>
+            </div>`
+            ).join('')}
+    `;
+
+            // After metrics
+            const diImproved = mitigated.disparate_impact >= 0.8;
+            const afterEl = document.getElementById('afterMetrics');
+            afterEl.innerHTML = `
+        <div>
+            <div class="flex justify-between mb-xs">
+                <span class="font-label-md text-label-md">Disparate Impact Ratio</span>
+                <div class="flex items-center gap-xs">
+                    <span class="material-symbols-outlined text-on-tertiary-container text-sm">trending_up</span>
+                    <span class="font-h3 text-h3 text-on-tertiary-container">${mitigated.disparate_impact.toFixed(3)}</span>
+                </div>
+            </div>
+            <div class="w-full h-2 bg-slate-100 overflow-hidden rounded-full">
+                <div class="h-full bg-on-tertiary-container rounded-full" style="width: ${(mitigated.disparate_impact * 100).toFixed(0)}%"></div>
+            </div>
+        </div>
+        <div class="flex justify-between py-xs border-b border-slate-100">
+            <span class="font-body-sm text-body-sm text-on-surface-variant">Model Accuracy</span>
+            <span class="font-body-sm font-semibold">${(mitigated.accuracy * 100).toFixed(1)}% <span class="text-${accuracy_change >= 0 ? 'on-tertiary-container' : 'error'} font-normal text-xs ml-1">${accuracy_change >= 0 ? '+' : ''}${(accuracy_change * 100).toFixed(1)}%</span></span>
+        </div>
+        <div class="p-sm bg-on-tertiary-container/10 rounded border border-on-tertiary-container/20">
+            <p class="font-label-md text-label-md text-on-tertiary-container">Fairness Improvement: <strong>+${(improvement * 100).toFixed(1)} pts</strong> | Removed feature: <strong>${sensitive}</strong></p>
+        </div>
+    `;
+
+            // Gemini evaluation
+            const geminiEl = document.getElementById('geminiEvaluation');
+            if (gemini_evaluation) {
+                let html = gemini_evaluation
+                    .replace(/## (.*)/g, '<h2>$1</h2>')
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                    .replace(/\* (.*)/g, '<li>$1</li>')
+                    .replace(/\n\n/g, '<br><br>')
+                    .replace(/\n/g, '<br>');
+                geminiEl.innerHTML = html;
+            } else {
+                geminiEl.innerHTML = '<p class="text-on-surface-variant">No Gemini evaluation returned. Ensure your GEMINI_API_KEY is configured in Backend/.env</p>';
+            }
+        }
+
+        function showError(msg) {
+            document.getElementById('errorBox').classList.remove('hidden');
+            document.getElementById('errorMsg').textContent = msg;
+        }
+    </script>
+</body>
+
+</html>

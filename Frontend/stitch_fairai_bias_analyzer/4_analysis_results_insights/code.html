@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Analysis Results - FairAI</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface": "#f8f9ff",
+                    "on-background": "#0b1c30",
+                    "secondary": "#0058be",
+            }
+          },
+        },
+      }
+    </script>
+<style>
+    .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        display: inline-block;
+        vertical-align: middle;
+    }
+    body { font-family: 'Inter', sans-serif; min-height: max(884px, 100dvh); transition: background-color 0.3s ease; }
+    .gemini-text h2 { font-size: 1.125rem; font-weight: 600; margin: 1.5rem 0 0.75rem; color: #0b1c30; }
+    .dark .gemini-text h2 { color: #f8f9ff; }
+    .gemini-text p { margin: 0.5rem 0; line-height: 1.6; }
+    .gemini-text ul { margin: 0.5rem 0 0.5rem 1.25rem; list-style: disc; }
+    .gemini-text li { margin: 0.25rem 0; line-height: 1.6; }
+    .gemini-text strong { font-weight: 600; }
+    .metric-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .metric-card:hover { transform: translateY(-2px); }
+</style>
+</head>
+<body class="bg-surface dark:bg-slate-950 text-on-surface dark:text-slate-200">
+
+<!-- TopAppBar -->
+<header class="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-50 font-sans antialiased font-medium border-b border-slate-200 dark:border-slate-800 flex justify-between items-center w-full px-6 py-3 sticky z-50 top-0">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-50">FairAI</span>
+</div>
+<div class="flex items-center gap-6">
+<nav class="hidden md:flex gap-4">
+<span class="text-slate-500 dark:text-slate-400 font-label-md text-label-md cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800 px-2 py-1" onclick="window.location.href='../1_upload_dataset/code.html'">UPLOAD</span>
+<span class="text-slate-500 dark:text-slate-400 font-label-md text-label-md cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800 px-2 py-1" onclick="window.location.href='../2_configure_analysis/code.html'">CONFIG</span>
+<span class="text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 font-label-md text-label-md px-2 py-1">INSIGHTS</span>
+</nav>
+<!-- Theme Toggle -->
+<button id="themeToggle" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+    <span id="themeIcon" class="material-symbols-outlined">dark_mode</span>
+</button>
+</div>
+</header>
+
+<div class="flex min-h-screen">
+<!-- NavigationDrawer -->
+<aside class="hidden lg:flex flex-col h-screen w-64 border-r border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 py-4 space-y-2 sticky top-0">
+<div class="px-6 mb-4">
+<p class="text-sm font-semibold tracking-wide uppercase text-slate-900 dark:text-slate-50">Audit Workflow</p>
+</div>
+<nav class="flex flex-col flex-1">
+<a class="flex items-center gap-3 px-6 py-3 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-all duration-200" href="../1_upload_dataset/code.html">
+<span class="material-symbols-outlined">upload_file</span>
+<span class="text-sm font-semibold tracking-wide uppercase whitespace-nowrap">Upload</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-all duration-200" href="../2_configure_analysis/code.html">
+<span class="material-symbols-outlined">tune</span>
+<span class="text-sm font-semibold tracking-wide uppercase whitespace-nowrap">Config</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-all duration-200" href="../3_analyzing_fairness/code.html">
+<span class="material-symbols-outlined">hourglass_empty</span>
+<span class="text-sm font-semibold tracking-wide uppercase whitespace-nowrap">Analysis</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 border-l-4 border-blue-600 shadow-sm transition-all duration-200" href="#">
+<span class="material-symbols-outlined">auto_awesome</span>
+<span class="text-sm font-semibold tracking-wide uppercase whitespace-nowrap">AI Summary</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-all duration-200" href="../5_apply_mitigation_strategy/code.html">
+<span class="material-symbols-outlined">auto_fix_high</span>
+<span class="text-sm font-semibold tracking-wide uppercase whitespace-nowrap">Mitigation</span>
+</a>
+</nav>
+</aside>
+
+<!-- Main Content Area -->
+<main class="flex-1 p-gutter md:p-margin bg-surface dark:bg-slate-950">
+<div class="max-w-5xl mx-auto space-y-md">
+
+    <!-- Page Header -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-md">
+        <div class="space-y-xs">
+            <h1 class="font-h1 text-h1 text-on-background dark:text-white">Analysis Results</h1>
+            <p class="font-body-md text-body-md text-on-surface-variant dark:text-slate-400 max-w-2xl">Bias audit complete. Review the fairness metrics, group disparities, and Gemini AI recommendations below.</p>
+        </div>
+        <div class="flex gap-sm">
+            <button onclick="window.location.href='../5_apply_mitigation_strategy/code.html'"
+                    class="px-md py-sm bg-slate-900 dark:bg-blue-600 text-white rounded-lg font-label-md text-label-md flex items-center gap-xs hover:opacity-90 transition-all shadow-md">
+                <span class="material-symbols-outlined text-[18px]">auto_fix_high</span>
+                Apply Mitigation
+            </button>
+        </div>
+    </div>
+
+    <!-- No data warning -->
+    <div id="noDataWarning" class="hidden p-md bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg flex items-center gap-3">
+        <span class="material-symbols-outlined text-red-600 dark:text-red-400">warning</span>
+        <p class="font-body-sm text-body-sm text-red-800 dark:text-red-300">No analysis data found. <a href="../1_upload_dataset/code.html" class="underline font-semibold">Start over from the Upload page.</a></p>
+    </div>
+
+    <!-- Metric Cards Row -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-gutter" id="metricsRow">
+        <!-- Populated by JS -->
+    </div>
+
+    <!-- Selection Rate Chart + Summary -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-gutter">
+        <!-- Chart -->
+        <section class="bg-white dark:bg-slate-900 border border-outline-variant dark:border-slate-800 p-md rounded-lg shadow-sm">
+            <div class="flex items-center gap-3 mb-md">
+                <div class="bg-surface-container dark:bg-slate-800 text-secondary dark:text-blue-400 p-2 rounded">
+                    <span class="material-symbols-outlined">bar_chart</span>
+                </div>
+                <h3 class="font-h3 text-h3 dark:text-white">Selection Rate by Group</h3>
+            </div>
+            <div class="h-[250px]">
+                <canvas id="selectionChart"></canvas>
+            </div>
+        </section>
+
+        <!-- Bias Verdict -->
+        <section class="bg-white dark:bg-slate-900 border border-outline-variant dark:border-slate-800 p-md rounded-lg flex flex-col justify-between shadow-sm">
+            <div class="flex items-center gap-3 mb-md">
+                <div class="bg-surface-container dark:bg-slate-800 text-secondary dark:text-blue-400 p-2 rounded">
+                    <span class="material-symbols-outlined">gavel</span>
+                </div>
+                <h3 class="font-h3 text-h3 dark:text-white">Fairness Verdict</h3>
+            </div>
+
+            <div id="verdictContent" class="flex-1 flex flex-col justify-center items-center text-center gap-4 py-4">
+                <!-- JS populated -->
+            </div>
+
+            <div class="mt-md">
+                <div class="space-y-sm" id="groupRatesTable">
+                    <!-- JS populated -->
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Gemini AI Explanation -->
+    <section class="bg-white dark:bg-slate-900 border border-outline-variant dark:border-slate-800 p-md rounded-lg shadow-sm">
+        <div class="flex items-start gap-4 mb-md">
+            <div class="bg-surface-container dark:bg-slate-800 text-secondary dark:text-blue-400 p-3 rounded">
+                <span class="material-symbols-outlined">psychology</span>
+            </div>
+            <div>
+                <h3 class="font-h3 text-h3 dark:text-white">Gemini AI Bias Report</h3>
+                <p class="font-body-sm text-body-sm text-on-surface-variant dark:text-slate-400">AI-generated plain-English analysis of the bias patterns detected in your dataset.</p>
+            </div>
+        </div>
+        <div class="p-md bg-surface-container-low dark:bg-slate-800/50 rounded-lg border-l-4 border-secondary dark:border-blue-500 gemini-text dark:text-slate-300" id="geminiExplanation">
+            <div class="flex items-center gap-3">
+                <svg class="animate-spin h-5 w-5 text-secondary dark:text-blue-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                </svg>
+                <p>Synthesizing insights...</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Action Footer -->
+    <div class="flex flex-col md:flex-row gap-sm justify-between items-center pt-md">
+        <button onclick="window.location.href='../2_configure_analysis/code.html'"
+                class="w-full md:w-auto border border-outline dark:border-slate-700 bg-white dark:bg-slate-900 text-on-surface dark:text-slate-300 py-3 px-md rounded-lg font-label-md text-label-md flex items-center justify-center gap-2 hover:bg-surface-container-low dark:hover:bg-slate-800 transition-colors">
+            <span class="material-symbols-outlined">arrow_back</span> Re-configure
+        </button>
+        <button onclick="window.location.href='../5_apply_mitigation_strategy/code.html'"
+                class="w-full md:w-auto px-xl py-md bg-slate-900 dark:bg-blue-600 text-white font-h3 rounded-lg flex items-center justify-center gap-sm shadow-lg hover:opacity-90 active:scale-95 transition-all">
+            <span class="material-symbols-outlined">auto_fix_high</span>
+            Apply Mitigation Strategy
+        </button>
+    </div>
+
+    <!-- Footer -->
+    <div class="pt-xl flex justify-between items-center text-on-surface-variant dark:text-slate-500 opacity-50">
+        <p class="font-label-md text-label-md uppercase tracking-widest">FairAI Enterprise Audit Engine • v2.4.0</p>
+        <div class="flex gap-4">
+            <span class="material-symbols-outlined">security</span>
+            <span class="material-symbols-outlined">cloud_done</span>
+        </div>
+    </div>
+
+</div>
+</main>
+</div>
+
+<!-- Mobile BottomNav -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center bg-white/80 dark:bg-slate-900/80 backdrop-blur-md pb-safe border-t border-slate-200 dark:border-slate-800 h-16 shadow-lg">
+<div class="flex flex-col items-center text-slate-400 dark:text-slate-600" onclick="window.location.href='../1_upload_dataset/code.html'">
+<span class="material-symbols-outlined">cloud_upload</span>
+<span class="text-[10px] font-bold uppercase">Upload</span>
+</div>
+<div class="flex flex-col items-center text-slate-400 dark:text-slate-600" onclick="window.location.href='../2_configure_analysis/code.html'">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-[10px] font-bold uppercase">Config</span>
+</div>
+<div class="flex flex-col items-center text-slate-400 dark:text-slate-600">
+<span class="material-symbols-outlined">query_stats</span>
+<span class="text-[10px] font-bold uppercase">Status</span>
+</div>
+<div class="flex flex-col items-center text-blue-600 dark:text-blue-400">
+<span class="material-symbols-outlined">assessment</span>
+<span class="text-[10px] font-bold uppercase">Results</span>
+</div>
+<div class="flex flex-col items-center text-slate-400 dark:text-slate-600" onclick="window.location.href='../5_apply_mitigation_strategy/code.html'">
+<span class="material-symbols-outlined">auto_fix_high</span>
+<span class="text-[10px] font-bold uppercase">Fix</span>
+</div>
+</nav>
+
+<script>
+// --- Theme Management ---
+const html = document.documentElement;
+const themeToggle = document.getElementById('themeToggle');
+const themeIcon = document.getElementById('themeIcon');
+
+function updateTheme(isDark) {
+    if (isDark) {
+        html.classList.add('dark');
+        themeIcon.textContent = 'light_mode';
+        localStorage.setItem('theme', 'dark');
+    } else {
+        html.classList.remove('dark');
+        themeIcon.textContent = 'dark_mode';
+        localStorage.setItem('theme', 'light');
+    }
+    // Update chart if it exists
+    if (window.myChart) {
+        const gridColor = isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)';
+        const textColor = isDark ? '#94a3b8' : '#64748b';
+        window.myChart.options.scales.y.grid.color = gridColor;
+        window.myChart.options.scales.y.ticks.color = textColor;
+        window.myChart.options.scales.x.ticks.color = textColor;
+        window.myChart.update();
+    }
+}
+
+const savedTheme = localStorage.getItem('theme');
+if (savedTheme === 'dark') updateTheme(true);
+else if (savedTheme === 'light') updateTheme(false);
+else if (window.matchMedia('(prefers-color-scheme: dark)').matches) updateTheme(true);
+
+themeToggle.addEventListener('click', () => updateTheme(!html.classList.contains('dark')));
+
+window.onload = function () {
+    const data = JSON.parse(localStorage.getItem('analysisResult'));
+
+    if (!data || data.error) {
+        document.getElementById('noDataWarning').classList.remove('hidden');
+        if (data && data.error) {
+            document.getElementById('noDataWarning').querySelector('p').textContent = `Error: ${data.error}`;
+        }
+        return;
+    }
+
+    const { selection_rates, disparate_impact, accuracy, gemini_explanation, affected_group, favored_group } = data;
+    const isFair = disparate_impact >= 0.8;
+    const biasLevel = disparate_impact < 0.6 ? 'SEVERE' : disparate_impact < 0.8 ? 'MODERATE' : 'LOW';
+
+    // --- Metric Cards ---
+    const metricsRow = document.getElementById('metricsRow');
+    const diColor = isFair ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400';
+    const diIcon = isFair ? 'verified_user' : 'gpp_bad';
+
+    metricsRow.innerHTML = `
+        <div class="metric-card bg-white dark:bg-slate-900 border border-outline-variant dark:border-slate-800 p-md rounded-lg shadow-sm">
+            <div class="flex items-center justify-between mb-xs">
+                <span class="font-label-md text-label-md text-on-surface-variant dark:text-slate-400 uppercase tracking-wider">Accuracy</span>
+                <span class="material-symbols-outlined text-secondary dark:text-blue-400 text-[20px]">speed</span>
+            </div>
+            <p class="text-3xl font-bold text-on-background dark:text-white">${accuracy ? (accuracy * 100).toFixed(1) : '—'}%</p>
+            <p class="text-xs text-on-surface-variant dark:text-slate-500 mt-1">On test partition</p>
+        </div>
+        <div class="metric-card bg-white dark:bg-slate-900 border border-outline-variant dark:border-slate-800 p-md rounded-lg shadow-sm">
+            <div class="flex items-center justify-between mb-xs">
+                <span class="font-label-md text-label-md text-on-surface-variant dark:text-slate-400 uppercase tracking-wider">Parity Score</span>
+                <span class="material-symbols-outlined ${diColor} text-[20px]">${diIcon}</span>
+            </div>
+            <p class="text-3xl font-bold ${diColor}">${disparate_impact.toFixed(3)}</p>
+            <p class="text-xs text-on-surface-variant dark:text-slate-500 mt-1">Threshold: ≥ 0.80</p>
+        </div>
+        <div class="metric-card bg-white dark:bg-slate-900 border border-outline-variant dark:border-slate-800 p-md rounded-lg shadow-sm">
+            <div class="flex items-center justify-between mb-xs">
+                <span class="font-label-md text-label-md text-on-surface-variant dark:text-slate-400 uppercase tracking-wider">Bias Risk</span>
+                <span class="material-symbols-outlined text-[20px] ${biasLevel === 'LOW' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}">${biasLevel === 'LOW' ? 'shield_check' : 'warning'}</span>
+            </div>
+            <p class="text-3xl font-bold ${biasLevel === 'LOW' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}">${biasLevel}</p>
+            <p class="text-xs text-on-surface-variant dark:text-slate-500 mt-1">Targeting: <span class="font-bold">${affected_group || '—'}</span></p>
+        </div>
+    `;
+
+    // --- Selection Rate Chart ---
+    const groups = Object.keys(selection_rates);
+    const rates = Object.values(selection_rates).map(r => parseFloat((r * 100).toFixed(1)));
+    const chartColors = groups.map((_, i) => i === 0 ? '#0058be' : '#10b981');
+
+    const ctx = document.getElementById('selectionChart');
+    const isDark = html.classList.contains('dark');
+    window.myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: groups,
+            datasets: [{
+                label: 'Selection Rate %',
+                data: rates,
+                backgroundColor: chartColors,
+                borderRadius: 6,
+                barThickness: 40,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: { backgroundColor: isDark ? '#1e293b' : '#ffffff', titleColor: isDark ? '#ffffff' : '#000000', bodyColor: isDark ? '#cbd5e1' : '#64748b' }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100,
+                    grid: { color: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)' },
+                    ticks: { color: isDark ? '#94a3b8' : '#64748b', callback: v => `${v}%` }
+                },
+                x: { grid: { display: false }, ticks: { color: isDark ? '#94a3b8' : '#64748b' } }
+            }
+        }
+    });
+
+    // --- Verdict ---
+    const verdictEl = document.getElementById('verdictContent');
+    verdictEl.innerHTML = isFair
+        ? `<div class="w-16 h-16 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center shadow-inner">
+               <span class="material-symbols-outlined text-green-600 dark:text-green-400" style="font-size:40px">verified_user</span>
+           </div>
+           <div>
+               <p class="text-xl font-bold text-green-700 dark:text-green-400">Compliance Passed</p>
+               <p class="text-sm text-on-surface-variant dark:text-slate-400">Score of ${disparate_impact.toFixed(3)} meets the 80% parity standard.</p>
+           </div>`
+        : `<div class="w-16 h-16 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center shadow-inner">
+               <span class="material-symbols-outlined text-red-600 dark:text-red-400" style="font-size:40px">gpp_bad</span>
+           </div>
+           <div>
+               <p class="text-xl font-bold text-red-700 dark:text-red-400">Bias Violation</p>
+               <p class="text-sm text-on-surface-variant dark:text-slate-400">Score of ${disparate_impact.toFixed(3)} falls below the 0.80 parity threshold.</p>
+           </div>`;
+
+    // --- Group rates table ---
+    const tableEl = document.getElementById('groupRatesTable');
+    tableEl.innerHTML = groups.map((group, i) => `
+        <div class="flex items-center justify-between py-2 border-b border-outline-variant dark:border-slate-800 last:border-0">
+            <span class="text-sm font-semibold capitalize dark:text-slate-300">${group}</span>
+            <div class="flex items-center gap-3">
+                <div class="w-24 h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                    <div class="h-full rounded-full" style="width:${(selection_rates[group]*100).toFixed(0)}%; background:${chartColors[i]}"></div>
+                </div>
+                <span class="text-sm font-bold w-12 text-right" style="color:${chartColors[i]}">${(selection_rates[group]*100).toFixed(1)}%</span>
+            </div>
+        </div>
+    `).join('');
+
+    // --- Gemini Explanation ---
+    const geminiEl = document.getElementById('geminiExplanation');
+    if (gemini_explanation) {
+        let html = gemini_explanation
+            .replace(/## (.*)/g, '<h2>$1</h2>')
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            .replace(/\* (.*)/g, '<li>$1</li>')
+            .replace(/(<li>.*<\/li>)/gs, '<ul>$1</ul>')
+            .replace(/\n\n/g, '<br><br>')
+            .replace(/\n/g, '<br>');
+        geminiEl.innerHTML = html;
+    } else {
+        geminiEl.innerHTML = '<p class="text-on-surface-variant dark:text-slate-500">AI analysis unavailable. Verify your Gemini API credentials.</p>';
+    }
+};
+</script>
+</body></html>
