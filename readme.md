@@ -1,41 +1,74 @@
-# FairAI: Bias Detection & Explainability Tool
+# FairAI: Unbiased AI Bias Analyzer ⚖️🤖
 
-A complete working prototype for an AI fairness auditing system built with Streamlit and Google Gemini.
-It handles user uploads, trains a Logistic Regression model, calculates Selection Rates and Disparate Impact, and uses Gemini to explain the bias in plain English.
+**FairAI** is an AI governance platform designed to ensure fairness, transparency, and accountability in machine learning models. It identifies demographic biases in datasets, provides AI-driven explanations using Google Gemini, and simulates mitigation strategies to help developers build more equitable AI systems.
 
-## Features
-- Upload dataset and choose Target & Sensitive columns
-- Automatically preprocesses the dataset
-- Trains a baseline Logistic Regression model
-- Calculates fairness metrics (Selection Rate and Disparate Impact)
-- Explains findings via Google Gemini
-- Retrains model by dropping the sensitive feature to demonstrate bias mitigation
+---
 
-## Local Setup Instructions
+## 🌟 Key Features
 
-1. Ensure you have Python 3.9+ installed.
-2. Navigate to this directory in your terminal.
-3. Install the dependencies:
+- **📊 Automated Bias Auditing:** Instantly calculates selection rates and **Disparate Impact Scores** to identify unfair outcomes across demographic groups.
+- **🧠 AI-Powered Insights:** Integrates with **Google Gemini 2.0 Flash** to provide plain-English explanations of complex statistical bias.
+- **⚡ Real-time Mitigation Simulation:** Adjust model parameters in real-time to see how fairness can be improved without sacrificing accuracy.
+- **🎨 Ethos Modern Design:** A premium, dark-mode-ready user interface built for modern developers and auditors.
+- **📜 Exportable Reports:** Generate and download PDF reports of your fairness audits for stakeholders.
+
+---
+
+## 🛠️ Tech Stack
+
+- **Frontend:** HTML5, Tailwind CSS, JavaScript (Vanilla), Marked.js
+- **Backend:** Python 3.11+, FastAPI, Uvicorn
+- **Machine Learning:** Scikit-Learn, Pandas, NumPy
+- **AI Integration:** Google Gemini API (`google-genai` SDK)
+- **Deployment:** Vercel (Frontend), Render (Backend)
+
+---
+
+## 🚀 Quick Start
+
+### 1. Clone the repository
+```bash
+git clone https://github.com/bhavikakanathe/FairAI-bias-analyzer.git
+cd FairAI-bias-analyzer
+```
+
+### 2. Setup the Backend
+1. Navigate to the Backend folder:
    ```bash
+   cd Backend
+   ```
+2. Create a virtual environment and install dependencies:
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
    pip install -r requirements.txt
    ```
-4. Configure your API key:
-   - Copy `.env.example` to `.env`: `cp .env.example .env`
-   - Edit `.env` and assign your Gemini key to `GEMINI_API_KEY`
-5. Run the app locally:
+3. Create a `.env` file and add your Gemini API Key:
+   ```env
+   GEMINI_API_KEY=your_actual_key_here
+   ```
+4. Start the server:
    ```bash
-   streamlit run app.py
+   uvicorn api:app --reload
    ```
-6. Visit `http://localhost:8501` to use the application. You can upload `sample_dataset.csv` to try it out!
 
-## Deployment Instructions (Streamlit Community Cloud)
+### 3. Launch the Frontend
+Simply open `frontend new/stitch_fairai_bias_analyzer/0_dashboard_overview/code.html` in your web browser.
 
-1. Push this folder to a GitHub repository.
-2. Go to [share.streamlit.io](https://share.streamlit.io/) and log in.
-3. Click **New app**.
-4. Select your repository, branch, and set the main file path to `app.py`.
-5. Under **Advanced settings**, add your `GEMINI_API_KEY` to the Secrets section:
-   ```toml
-   GEMINI_API_KEY="your-actual-api-key-here"
-   ```
-6. Click **Deploy**. In less than a minute, your app will be publicly accessible.
+---
+
+## 📂 Project Structure
+
+- `Backend/`: FastAPI server, bias calculation logic, and Gemini integration.
+- `frontend new/`: The premium "Ethos Modern" UI prototype.
+- `sample_dataset.csv`: A sample dataset to test bias detection (Loan Approvals).
+
+---
+
+## 🏆 Google Solution Challenge 2026
+This project was developed for the **Google Solution Challenge** to address the need for ethical AI and reduced inequality in automated decision-making systems.
+
+---
+
+## 📜 License
+Distributed under the MIT License. See `LICENSE` for more information.
