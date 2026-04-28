@@ -65,11 +65,12 @@ def get_bias_explanation(
                 contents=prompt,
             )
             return response.text
-        except Exception as e:
-            print(f"DEBUG: Model {model_name} failed. Error: {str(e)}")
+    except Exception as e:
+            last_error = str(e)
+            print(f"DEBUG: Model {model_name} failed. Error: {last_error}")
             continue
 
-    return f"Gemini API Error: No supported models accessible with this API key. Last attempted model: {model_name}"
+    return f"Gemini API Error: {last_error} (Last tried: {model_name})"
 
 
 def get_mitigation_analysis(
@@ -108,8 +109,9 @@ def get_mitigation_analysis(
                 contents=prompt,
             )
             return response.text
-        except Exception as e:
-            print(f"DEBUG: Model {model_name} failed. Error: {str(e)}")
+    except Exception as e:
+            last_error = str(e)
+            print(f"DEBUG: Model {model_name} failed. Error: {last_error}")
             continue
 
-    return f"Gemini API Error: No supported models accessible with this API key. Last attempted model: {model_name}"
+    return f"Gemini API Error: {last_error} (Last tried: {model_name})"
