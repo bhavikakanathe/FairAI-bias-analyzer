@@ -36,8 +36,10 @@ def get_bias_explanation(
         "LOW"
     )
 
+    from datetime import datetime
+    curr_date = datetime.now().strftime("%B %d, %Y")
     prompt = (
-        "You are an expert AI Fairness Auditor powered by Google Gemini.\n"
+        f"You are an expert AI Fairness Auditor powered by Google Gemini. Date: {curr_date}\n"
         "You have just analyzed a machine learning dataset for bias.\n\n"
         "--- AUDIT RESULTS ---\n"
         f"Target Column: {target_col}\n"
