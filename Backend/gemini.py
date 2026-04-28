@@ -57,8 +57,8 @@ def get_bias_explanation(
         "Keep tone professional and avoid jargon."
     )
 
-    # Try the most likely models in order of stability
-    for model_name in ["gemini-1.5-flash", "gemini-2.0-flash", "gemini-1.5-pro", "gemini-1.0-pro"]:
+    # Try the most likely models in order of stability (Updated based on your key's permissions)
+    for model_name in ["gemini-2.0-flash", "gemini-2.5-flash", "gemini-1.5-flash", "gemini-flash-latest"]:
         try:
             response = _client.models.generate_content(
                 model=model_name,
@@ -101,7 +101,7 @@ def get_mitigation_analysis(
         "Be direct, use numbers, keep under 150 words."
     )
 
-    for model_name in ["gemini-1.5-flash", "gemini-2.0-flash", "gemini-1.5-pro", "gemini-1.0-pro"]:
+    for model_name in ["gemini-2.0-flash", "gemini-2.5-flash", "gemini-1.5-flash", "gemini-flash-latest"]:
         try:
             response = _client.models.generate_content(
                 model=model_name,
