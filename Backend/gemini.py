@@ -1,4 +1,5 @@
 import os
+import time
 from google import genai
 from dotenv import load_dotenv
 
@@ -70,6 +71,11 @@ def get_bias_explanation(
             return response.text
         except Exception as e:
             last_error = str(e)
+            if "503" in last_error or "high demand" in last_error.lower():
+                time.sleep(2)
+                try:
+                    return _client.models.generate_content(model=model_name, contents=prompt).text
+                except: pass
             print(f"DEBUG: Model {model_name} failed. Error: {last_error}")
             continue
 
@@ -115,6 +121,11 @@ def get_mitigation_analysis(
             return response.text
         except Exception as e:
             last_error = str(e)
+            if "503" in last_error or "high demand" in last_error.lower():
+                time.sleep(2)
+                try:
+                    return _client.models.generate_content(model=model_name, contents=prompt).text
+                except: pass
             print(f"DEBUG: Model {model_name} failed. Error: {last_error}")
             continue
 
