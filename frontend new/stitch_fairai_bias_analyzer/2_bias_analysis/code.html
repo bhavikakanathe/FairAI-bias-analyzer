@@ -177,7 +177,10 @@
           <span class="font-label-md text-label-md text-on-surface-variant dark:text-slate-500 tracking-wider">Analysis Accuracy: <span id="confidenceScore">Calculating...</span></span>
         </div>
         <h2 class="font-display text-4xl font-bold text-on-surface dark:text-white leading-tight">Demographic Parity Analysis</h2>
-        <p id="subheading" class="font-body-md text-on-surface-variant dark:text-slate-400 max-w-2xl">Quantitative assessment of selection rates across sensitive attribute dimensions.</p>
+        <p id="subheading" class="font-body-md text-on-surface-variant dark:text-slate-400 max-w-2xl">
+          Analyzing <span id="targetColName" class="font-bold text-secondary dark:text-blue-400">...</span> bias 
+          across <span id="sensitiveColName" class="font-bold text-secondary dark:text-blue-400">...</span> dimensions.
+        </p>
       </div>
       <button onclick="window.location.href='../3_ai_decision_summary/code.html'" class="bg-primary dark:bg-slate-50 dark:text-slate-900 text-on-primary px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-slate-800 dark:hover:bg-white transition-all shadow-md active:scale-95">
         View AI Insights
@@ -292,6 +295,11 @@
       const affected = data.affected_group ?? "Unknown";
       const rates = data.selection_rates ?? {};
       const rows = data.dataset_rows ?? 0;
+      const targetCol = data.target_column ?? "Target";
+      const sensitiveCol = data.sensitive_attribute ?? "Attribute";
+
+      document.getElementById("targetColName").textContent = targetCol;
+      document.getElementById("sensitiveColName").textContent = sensitiveCol;
 
       document.getElementById("diScore").textContent = di.toFixed(2);
       document.getElementById("diScore").style.color = di < 0.8 ? "#ba1a1a" : "#059669";
