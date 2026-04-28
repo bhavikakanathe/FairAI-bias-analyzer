@@ -1,7 +1,7 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LogisticRegression
-from sklearn.preprocessing import LabelEncoder
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.preprocessing import LabelEncoder, StandardScaler
 
 
 # -------------------------------
@@ -13,6 +13,15 @@ def preprocess_data(df, target_col):
     # Separate target and features
     y = df[target_col]
     X = df.drop(columns=[target_col])
+
+    # Fill missing values
+    X = X.fillna(X.median(numeric_only=True)).fillna("missing")
+
+    # Scaling numerical columns
+    scaler = StandardScaler()
+    numeric_cols = X.select_dtypes(include=['int64', 'float64']).columns
+    if not numeric_cols.empty:
+        X[numeric_cols] = scaler.fit_transform(X[numeric_cols])
 
     # Encode categorical columns
     for col in X.columns:
@@ -31,7 +40,8 @@ def train_model(X, y):
         X, y, test_size=0.2, random_state=42
     )
 
-    model = LogisticRegression(max_iter=1000)
+    # Upgrade to Random Forest for best balance of accuracy and fairness
+    model = RandomForestClassifier(n_estimators=100, random_state=42)
     model.fit(X_train, y_train)
 
     accuracy = model.score(X_test, y_test)
