@@ -57,6 +57,7 @@ def get_bias_explanation(
         "Keep tone professional and avoid jargon."
     )
 
+    last_error = "No models attempted"
     # Try the most likely models in order of stability (Updated based on your key's permissions)
     for model_name in ["gemini-2.0-flash", "gemini-2.5-flash", "gemini-1.5-flash", "gemini-flash-latest"]:
         try:
@@ -65,7 +66,7 @@ def get_bias_explanation(
                 contents=prompt,
             )
             return response.text
-    except Exception as e:
+        except Exception as e:
             last_error = str(e)
             print(f"DEBUG: Model {model_name} failed. Error: {last_error}")
             continue
@@ -102,6 +103,7 @@ def get_mitigation_analysis(
         "Be direct, use numbers, keep under 150 words."
     )
 
+    last_error = "No models attempted"
     for model_name in ["gemini-2.0-flash", "gemini-2.5-flash", "gemini-1.5-flash", "gemini-flash-latest"]:
         try:
             response = _client.models.generate_content(
@@ -109,7 +111,7 @@ def get_mitigation_analysis(
                 contents=prompt,
             )
             return response.text
-    except Exception as e:
+        except Exception as e:
             last_error = str(e)
             print(f"DEBUG: Model {model_name} failed. Error: {last_error}")
             continue
