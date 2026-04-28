@@ -1,74 +1,28 @@
-# FairAI: Unbiased AI Bias Analyzer ⚖️🤖
+FairAI: The Intelligent AI Bias Auditor
+"Turning Black-Box Bias into Plain-English Justice."
 
-**FairAI** is an AI governance platform designed to ensure fairness, transparency, and accountability in machine learning models. It identifies demographic biases in datasets, provides AI-driven explanations using Google Gemini, and simulates mitigation strategies to help developers build more equitable AI systems.
+FairAI is a No-Code AI Governance platform built for the 2026 Google Solution Challenge. It empowers organizations to audit their machine learning models for demographic bias and provides AI-driven mitigation strategies using Google Gemini.
 
----
+Key Features
+No-Code Ingestion: Universal compatibility for any tabular CSV dataset.
+Standardized Benchmarking: Automated calculation of Disparate Impact and Selection Rate Parity.
+AI Ethical Auditor: Powered by Google Gemini 1.5 Flash, translating complex math into human-readable governance reports.
+Mitigation Lab: Interactive real-time simulation of fairness strategies to de-risk AI deployment.
+Privacy First: Automatic PII detection and handling during the audit process.
+Technical Stack
+AI Engine: Google Gemini 1.5 Flash (Generative AI SDK)
+Backend: FastAPI (Python), Pandas, Scikit-Learn (Random Forest Engine)
+Frontend: JavaScript, Tailwind CSS (Stitch UI System)
+Cloud: Vercel (Frontend) & Render (Backend)
+UN SDG Alignment
+We are committed to building a fairer digital future by aligning with:
 
-## 🌟 Key Features
-
-- **📊 Automated Bias Auditing:** Instantly calculates selection rates and **Disparate Impact Scores** to identify unfair outcomes across demographic groups.
-- **🧠 AI-Powered Insights:** Integrates with **Google Gemini 2.0 Flash** to provide plain-English explanations of complex statistical bias.
-- **⚡ Real-time Mitigation Simulation:** Adjust model parameters in real-time to see how fairness can be improved without sacrificing accuracy.
-- **🎨 Ethos Modern Design:** A premium, dark-mode-ready user interface built for modern developers and auditors.
-- **📜 Exportable Reports:** Generate and download PDF reports of your fairness audits for stakeholders.
-
----
-
-## 🛠️ Tech Stack
-
-- **Frontend:** HTML5, Tailwind CSS, JavaScript (Vanilla), Marked.js
-- **Backend:** Python 3.11+, FastAPI, Uvicorn
-- **Machine Learning:** Scikit-Learn, Pandas, NumPy
-- **AI Integration:** Google Gemini API (`google-genai` SDK)
-- **Deployment:** Vercel (Frontend), Render (Backend)
-
----
-
-## 🚀 Quick Start
-
-### 1. Clone the repository
-```bash
-git clone https://github.com/bhavikakanathe/FairAI-bias-analyzer.git
-cd FairAI-bias-analyzer
-```
-
-### 2. Setup the Backend
-1. Navigate to the Backend folder:
-   ```bash
-   cd Backend
-   ```
-2. Create a virtual environment and install dependencies:
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   pip install -r requirements.txt
-   ```
-3. Create a `.env` file and add your Gemini API Key:
-   ```env
-   GEMINI_API_KEY=your_actual_key_here
-   ```
-4. Start the server:
-   ```bash
-   uvicorn api:app --reload
-   ```
-
-### 3. Launch the Frontend
-Simply open `frontend new/stitch_fairai_bias_analyzer/0_dashboard_overview/code.html` in your web browser.
-
----
-
-## 📂 Project Structure
-
-- `Backend/`: FastAPI server, bias calculation logic, and Gemini integration.
-- `frontend new/`: The premium "Ethos Modern" UI prototype.
-- `sample_dataset.csv`: A sample dataset to test bias detection (Loan Approvals).
-
----
-
-## 🏆 Google Solution Challenge 2026
-This project was developed for the **Google Solution Challenge** to address the need for ethical AI and reduced inequality in automated decision-making systems.
-
----
-
-## 📜 License
-Distributed under the MIT License. See `LICENSE` for more information.
+Goal 10: Reduced Inequalities – Preventing algorithmic discrimination.
+Goal 16: Peace, Justice, and Strong Institutions – Providing the transparency required for accountable AI.
+Live Links
+Live App: https://fair-ai-bias-analyzer.vercel.app/
+Team: Alpha Beta Gamma
+Dhairya Sen – Project Lead 
+Bhavika Kanathe
+Aabha Shukla
+"Bias is a bug, and FairAI is the debugger."
